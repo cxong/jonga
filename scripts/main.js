@@ -4,7 +4,7 @@ GameState.prototype.preload = function() {
 };
 
 GameState.prototype.create = function() {
-  this.game.stage.backgroundColor = 0x00FFF6;
+  this.game.stage.backgroundColor = 0xffffff;
 	this.game.physics.arcade.gravity.y = GRAVITY;
 
   this.sounds = {
@@ -13,11 +13,11 @@ GameState.prototype.create = function() {
 
   this.groups = {
     bg: this.game.add.group(),
+    title: this.game.add.group(),
     enemies: this.game.add.group(),
     player: this.game.add.group(),
     enemyFists: this.game.add.group(),
-    playerFists: this.game.add.group(),
-    title: this.game.add.group()
+    playerFists: this.game.add.group()
   };
 
   this.groups.bg.add(this.game.add.sprite(0, 0, 'bg'));
@@ -49,6 +49,7 @@ GameState.prototype.create = function() {
   this.title = this.game.add.sprite(
     SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 'title');
   this.title.anchor.setTo(0.5);
+  this.groups.title.add(this.title);
 
   this.started = false;
 
