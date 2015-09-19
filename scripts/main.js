@@ -5,7 +5,10 @@ GameState.prototype.preload = function() {
 
 GameState.prototype.create = function() {
   this.game.stage.backgroundColor = 0xffffff;
-	this.game.physics.arcade.gravity.y = GRAVITY;
+  this.game.physics.startSystem(Phaser.Physics.P2JS);
+	//this.game.physics.p2.gravity.y = GRAVITY;
+  this.game.physics.p2.restitution = 1.0;
+  this.game.physics.p2.setBoundsToWorld();
 
   this.sounds = {
     //hit: this.game.add.sound('hit'),
@@ -26,7 +29,8 @@ GameState.prototype.create = function() {
   //this.groups.sand.add(sand);
 
   this.player = new Player(
-    this.game, this.groups.player, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    this.game, this.groups.player, this.groups.playerFists,
+    SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
   this.game.input.onDown.add(function() {
     this.tryStart();
@@ -87,6 +91,33 @@ GameState.prototype.tryStart = function() {
 };
 
 GameState.prototype.update = function() {
+  // Punch using keyboard
+  // WSAD = left arm
+  // cursors = right arm
+  var leftMove = {x:0, y:0};
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+    leftMove.x = -1;
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+    leftMove.x = 1;
+  }
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+    leftMove.y = -1;
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
+    leftMove.y = 1;
+  }
+  this.player.leftFist.move(leftMove.x, leftMove.y);
+  var rightMove = {x:0, y:0};
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+    rightMove.x = -1;
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+    rightMove.x = 1;
+  }
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+    rightMove.y = -1;
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+    rightMove.y = 1;
+  }
+  this.player.rightFist.move(rightMove.x, rightMove.y);
   /*this.game.physics.arcade.overlap(
     this.groups.coconuts, this.groups.tourists, function(coconut, tourist) {
   }, null, this);*/
