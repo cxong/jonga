@@ -25,17 +25,12 @@ GameState.prototype.create = function() {
   //sand.anchor.y = 1;
   //this.groups.sand.add(sand);
 
-/*
   this.player = new Player(
-    this.game, this.groups.tree, this.groups.coconuts, this.sounds,
-    SCREEN_WIDTH / 2, SAND_Y, 'tree');
+    this.game, this.groups.player, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+
   this.game.input.onDown.add(function() {
-    this.attack();
+    this.tryStart();
   }, this);
-  this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function() {
-    this.attack();
-  }, this);
-*/
 
   //this.music = this.game.add.audio('music');
 /*
@@ -82,13 +77,11 @@ GameState.prototype.stop = function() {
   this.readyTime = this.game.time.now + 1000;
 };
 
-GameState.prototype.attack = function() {
+GameState.prototype.tryStart = function() {
   if (!this.started) {
     if (this.readyTime < this.game.time.now) {
       this.start();
     }
-  } else {
-    //this.tree.attack();
   }
 };
 

@@ -18,6 +18,7 @@ BasicGame.Preload.prototype = {
 
       this.game.load.image('title', 'images/title.png');
       this.game.load.image('bg', 'images/bg.png');
+      this.game.load.image('player', 'images/player.png');
 
       //this.game.load.audio('hit', 'sounds/hit.wav');
       //this.game.load.audio('music', 'sounds/headinthesand.ogg');
