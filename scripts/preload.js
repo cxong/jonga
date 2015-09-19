@@ -22,7 +22,7 @@ BasicGame.Preload.prototype = {
       this.game.load.image('fist_front', 'images/fist_front.png');
       this.game.load.image('fist_back', 'images/fist_back.png');
 
-      //this.game.load.audio('hit', 'sounds/hit.wav');
+      this.game.load.audio('whoosh', 'sounds/whoosh.ogg');
       //this.game.load.audio('music', 'sounds/headinthesand.ogg');
     },
 

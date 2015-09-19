@@ -1,4 +1,5 @@
 var DEADZONE = 10;
+var WHOOSH_SPEED_THRESHOLD = 800;
 
 var Fist = function(game, group, x, y, sprite, armLength, speed) {
   Phaser.Sprite.call(this, game, x, y, sprite);
@@ -13,6 +14,8 @@ var Fist = function(game, group, x, y, sprite, armLength, speed) {
   this.speed = speed;
   this.movePos = new Phaser.Point();
   this.shoulderPos = new Phaser.Point(x, y);
+
+  this.whooshSound = game.add.sound('whoosh');
 };
 Fist.prototype = Object.create(Phaser.Sprite.prototype);
 Fist.prototype.constructor = Fist;
@@ -40,6 +43,12 @@ Fist.prototype.update = function() {
       .multiply(speed, speed);
     this.body.velocity.x = moveD.x;
     this.body.velocity.y = moveD.y;
+    var v = new Phaser.Point(this.body.velocity.x, this.body.velocity.y);
+    console.log(v.getMagnitude());
+    if (v.getMagnitude() > WHOOSH_SPEED_THRESHOLD &&
+      !this.whooshSound.isPlaying) {
+      this.whooshSound.play();
+    }
   }
   // Don't let fists exceed arm length
   var armPos = new Phaser.Point(this.x, this.y)
