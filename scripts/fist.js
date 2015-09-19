@@ -1,30 +1,52 @@
+var DEADZONE = 10;
+
 var Fist = function(game, group, x, y, sprite, armLength, speed) {
   Phaser.Sprite.call(this, game, x, y, sprite);
   this.anchor.setTo(0.5);
   this.scale.setTo(PLAYER_SCALE);
   game.physics.p2.enable(this);
   this.body.setCircle(this.width / 2);
+  this.body.damping = 0.3;
   group.add(this);
 
   this.armLength = armLength;
   this.speed = speed;
-  this.movePos = {x:0, y:0};
-  this.shoulderPos = {x:x, y:y};
+  this.movePos = new Phaser.Point();
+  this.shoulderPos = new Phaser.Point(x, y);
 };
 Fist.prototype = Object.create(Phaser.Sprite.prototype);
 Fist.prototype.constructor = Fist;
 
 Fist.prototype.move = function(x, y) {
-  this.movePos.x = x;
-  this.movePos.y = y;
+  this.movePos = new Phaser.Point(x, y);
 };
 
 Fist.prototype.update = function() {
   // accelerate towards target
-  var target = {
-    x:this.movePos.x*this.armLength + this.shoulderPos.x,
-    y:this.movePos.y*this.armLength + this.shoulderPos.y};
-  var angle = Math.atan2(target.y - this.y, target.x - this.x);
-  this.body.force.x += Math.cos(angle)*this.speed;
-  this.body.force.y = Math.sin(angle)*this.speed;
+  var target = this.movePos
+    .multiply(this.armLength, this.armLength)
+    .add(this.shoulderPos.x, this.shoulderPos.y);
+  var d = target.subtract(this.x, this.y);
+  // Deadzone
+  if (d.getMagnitude() < DEADZONE) {
+    this.body.velocity.x = 0;
+    this.body.velocity.y = 0;
+  } else {
+    var angle = Math.atan2(d.y, d.x);
+    // Decay the speed half linearly based on distance to target
+    var distance = Math.sqrt(d.x*d.x + d.y*d.y);
+    var speed = this.speed*(distance/this.armLength*0.5 + 0.5);
+    var moveD = new Phaser.Point(Math.cos(angle), Math.sin(angle))
+      .multiply(speed, speed);
+    this.body.velocity.x = moveD.x;
+    this.body.velocity.y = moveD.y;
+  }
+  // Don't let fists exceed arm length
+  var armPos = new Phaser.Point(this.x, this.y)
+    .subtract(this.shoulderPos.x, this.shoulderPos.y);
+  if (armPos.getMagnitude() > this.armLength) {
+    armPos = armPos.setMagnitude(this.armLength);
+    this.body.x = this.shoulderPos.x + armPos.x;
+    this.body.y = this.shoulderPos.y + armPos.y;
+  }
 };
