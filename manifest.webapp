@@ -1,0 +1,16 @@
+{
+  "name": "Jonga",
+  "description": "Physics based kung fu boss battle game for mini LD 62",
+  "launch_path": "/index.html",
+  "icons": {
+    "512": "images/icon-512.png",
+    "128": "images/icon-128.png"
+  },
+  "developer": {
+    "name": "congusbongus",
+    "url": "http://cxong.github.io"
+  },
+  "default_locale": "en",
+  "type": "web",
+  "version": "1.0"
+}
