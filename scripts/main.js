@@ -1,5 +1,7 @@
 var GameState = function(game){};
 
+var parrySound;
+
 GameState.prototype.preload = function() {
 };
 
@@ -14,6 +16,7 @@ GameState.prototype.create = function() {
   this.sounds = {
     //hit: this.game.add.sound('hit'),
   };
+  parrySound = this.game.add.sound('parry');
 
   this.groups = {
     bg: this.game.add.group(),
@@ -139,3 +142,7 @@ GameState.prototype.update = function() {
 
   this.fist_generator.update();
 };
+
+function parry(armature, body2) {
+  parrySound.play();
+}
