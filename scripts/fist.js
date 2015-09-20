@@ -12,7 +12,8 @@ var Fist = function(
   this.body.setCircle(this.width / 2);
   this.body.damping = 0.5;
   this.body.setCollisionGroup(collisionGroup);
-  this.body.collides(collidesWith);
+  this.body.collides(collidesWith, parry, this);
+  this.body.fixedRotation = true;
   group.add(this);
 
   this.armLength = armLength;
@@ -20,6 +21,7 @@ var Fist = function(
   this.movePos = new Phaser.Point();
   this.shoulderPos = new Phaser.Point(x, y);
 
+  this.parrySound = game.add.sound('parry');
   this.whooshSound = game.add.sound('whoosh');
 };
 Fist.prototype = Object.create(Phaser.Sprite.prototype);
@@ -75,3 +77,8 @@ Fist.prototype.update = function() {
     this.body.y = this.shoulderPos.y + armPos.y;
   }
 };
+
+function parry(fist, other) {
+  console.log('parry');
+  fist.sprite.parrySound.play();
+}

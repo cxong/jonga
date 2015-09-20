@@ -9,6 +9,7 @@ GameState.prototype.create = function() {
 	//this.game.physics.p2.gravity.y = GRAVITY;
   this.game.physics.p2.restitution = 1.0;
   this.game.physics.p2.setBoundsToWorld();
+  this.game.physics.p2.setImpactEvents(true);
 
   this.sounds = {
     //hit: this.game.add.sound('hit'),
