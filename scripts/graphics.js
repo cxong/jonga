@@ -5,4 +5,4 @@ var GROUND_Y = SCREEN_HEIGHT - 80;
 
 var GRAVITY = 990;
 
-var PLAYER_SCALE = 3;
+var PLAYER_SCALE = 4;

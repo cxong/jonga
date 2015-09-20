@@ -1,5 +1,7 @@
 var DEADZONE = 10;
-var WHOOSH_SPEED_THRESHOLD = 800;
+var MOVE_DEADZONE = 30;
+var FIST_FORCE_MULTIPLIER = 100;
+var WHOOSH_SPEED_THRESHOLD = 770;
 
 var Fist = function(game, group, x, y, sprite, armLength, speed) {
   Phaser.Sprite.call(this, game, x, y, sprite);
@@ -7,7 +9,7 @@ var Fist = function(game, group, x, y, sprite, armLength, speed) {
   this.scale.setTo(PLAYER_SCALE);
   game.physics.p2.enable(this);
   this.body.setCircle(this.width / 2);
-  this.body.damping = 0.3;
+  this.body.damping = 0.5;
   group.add(this);
 
   this.armLength = armLength;
@@ -22,6 +24,9 @@ Fist.prototype.constructor = Fist;
 
 Fist.prototype.move = function(x, y) {
   this.movePos = new Phaser.Point(x, y);
+  if (this.movePos.getMagnitude() > 1) {
+    this.movePos.setMagnitude(1);
+  }
 };
 
 Fist.prototype.update = function() {
@@ -34,6 +39,8 @@ Fist.prototype.update = function() {
   if (d.getMagnitude() < DEADZONE) {
     this.body.velocity.x = 0;
     this.body.velocity.y = 0;
+    this.body.force.x = 0;
+    this.body.force.y = 0;
   } else {
     var angle = Math.atan2(d.y, d.x);
     // Decay the speed half linearly based on distance to target
@@ -41,10 +48,16 @@ Fist.prototype.update = function() {
     var speed = this.speed*(distance/this.armLength*0.5 + 0.5);
     var moveD = new Phaser.Point(Math.cos(angle), Math.sin(angle))
       .multiply(speed, speed);
-    this.body.velocity.x = moveD.x;
-    this.body.velocity.y = moveD.y;
+    if (d.getMagnitude() < MOVE_DEADZONE) {
+      this.body.velocity.x = moveD.x;
+      this.body.velocity.y = moveD.y;
+    } else {
+      this.body.force.x += moveD.x*FIST_FORCE_MULTIPLIER;
+      this.body.force.y += moveD.y*FIST_FORCE_MULTIPLIER;
+    }
     var v = new Phaser.Point(this.body.velocity.x, this.body.velocity.y);
-    console.log(v.getMagnitude());
+    //console.log(v.getMagnitude());
+    //console.log(d.getMagnitude());
     if (v.getMagnitude() > WHOOSH_SPEED_THRESHOLD &&
       !this.whooshSound.isPlaying) {
       this.whooshSound.play();

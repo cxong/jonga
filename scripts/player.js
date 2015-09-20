@@ -1,5 +1,5 @@
 var PLAYER_ARM_LENGTH = 0.45;
-var PLAYER_FIST_SPEED = 1000;
+var PLAYER_FIST_SPEED = PLAYER_SCALE*50;
 
 var Player = function(game, group, fists, x, y) {
   Phaser.Sprite.call(this, game, x, y, 'player');

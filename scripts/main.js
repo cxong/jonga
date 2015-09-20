@@ -30,7 +30,7 @@ GameState.prototype.create = function() {
 
   this.player = new Player(
     this.game, this.groups.player, this.groups.playerFists,
-    SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50);
 
   this.game.input.onDown.add(function() {
     this.tryStart();
