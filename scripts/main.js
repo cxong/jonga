@@ -9,7 +9,7 @@ GameState.prototype.create = function() {
   this.game.stage.backgroundColor = 0xffffff;
   this.game.physics.startSystem(Phaser.Physics.P2JS);
 	//this.game.physics.p2.gravity.y = GRAVITY;
-  this.game.physics.p2.restitution = 1.0;
+  this.game.physics.p2.restitution = 2.0;
   this.game.physics.p2.setBoundsToWorld();
   this.game.physics.p2.setImpactEvents(true);
 
@@ -54,7 +54,15 @@ GameState.prototype.create = function() {
     this.tryStart();
   }, this);
 
-  //this.music = this.game.add.audio('music');
+  var filterVignette = this.game.add.filter('Vignette');
+  filterVignette.size = 0.3;
+  filterVignette.amount = 0.5;
+  filterVignette.alpha = 1.0;
+  var filterFilmGrain = this.game.add.filter('FilmGrain');
+  filterFilmGrain.color = 0.6;
+  filterFilmGrain.amount = 0.1;
+  filterFilmGrain.luminance = 0.8;
+  this.game.stage.filters = [filterVignette, filterFilmGrain];
 /*
   this.bigTextStyle = {
     font: "36px Courier New, monospace",
@@ -161,6 +169,8 @@ GameState.prototype.update = function() {
   }, null, this);*/
 
   this.fist_generator.update();
+
+  this.game.stage.filters[1].update();
 };
 
 function parry(armature, body2) {

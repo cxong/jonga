@@ -7,6 +7,7 @@ var Thing = function(
   this.body.setCircle(this.width / 2);
   this.body.setCollisionGroup(collisionGroup);
   this.body.collides(collidesWith);
+  this.body.mass = 10;
   group.add(this);
 
   this.body.velocity.x = dx;
