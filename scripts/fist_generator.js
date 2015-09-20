@@ -24,7 +24,6 @@ FistGenerator.prototype.update = function() {
     dy *= 0.2;
     new Thing(
       this.game, this.group, this.collisionGroup, this.collidesWith,
-      x, y, dx, dy, 'fist_front');
-    console.log("new thing at", x, y, dx, dy);
+      x, y, dx, dy, 'fist');
   }
 };

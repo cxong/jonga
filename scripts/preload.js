@@ -21,8 +21,7 @@ BasicGame.Preload.prototype = {
       this.game.load.image('player', 'images/player.png');
       this.game.load.image('arm_upper', 'images/arm_upper.png');
       this.game.load.image('arm_lower', 'images/arm_lower.png');
-      this.game.load.image('fist_front', 'images/fist_front.png');
-      this.game.load.image('fist_back', 'images/fist_back.png');
+      this.game.load.spritesheet('fist', 'images/fist.png', 9, 9);
 
       this.game.load.audio('parry', 'sounds/parry.ogg');
       this.game.load.audio('whoosh', 'sounds/whoosh.ogg');

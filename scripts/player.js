@@ -56,11 +56,11 @@ var Player = function(
 
   this.rightFist = new Fist(
     game, fists, fistsCollisionGroup, fistsCollidesWith, parry,
-    rightShoulder.x, rightShoulder.y, 'fist_front',
+    rightShoulder.x, rightShoulder.y, 'fist', 1,
     PLAYER_ARM_LENGTH*this.height, this.rightArmLower, PLAYER_FIST_SPEED);
   this.leftFist = new Fist(
     game, fists, fistsCollisionGroup, fistsCollidesWith, parry,
-    leftShoulder.x, leftShoulder.y, 'fist_back',
+    leftShoulder.x, leftShoulder.y, 'fist', 0,
     PLAYER_ARM_LENGTH*this.height, this.leftArmLower, PLAYER_FIST_SPEED);
 
   game.physics.p2.createRevoluteConstraint(

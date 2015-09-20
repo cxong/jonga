@@ -4,7 +4,7 @@ var FIST_FORCE_MULTIPLIER = 100;
 var WHOOSH_SPEED_THRESHOLD = 770;
 
 var Fist = function(
-  game, group, collisionGroup, collidesWith, collideFunc, x, y, sprite,
+  game, group, collisionGroup, collidesWith, collideFunc, x, y, sprite, frame,
   armLength, arm, speed) {
   Phaser.Sprite.call(this, game, x, y, sprite);
   this.anchor.setTo(0.5);
@@ -25,6 +25,10 @@ var Fist = function(
 
   this.parrySound = game.add.sound('parry');
   this.whooshSound = game.add.sound('whoosh');
+
+  // Choose fist frame based on angle
+  this.frameD = frame;
+  this.frame = frame;
 };
 Fist.prototype = Object.create(Phaser.Sprite.prototype);
 Fist.prototype.constructor = Fist;
@@ -81,4 +85,19 @@ Fist.prototype.update = function() {
 
   // Keep rotation the same as arm
   this.rotation = this.arm.body.rotation;
+  while (this.rotation > Math.PI*2) {
+    this.rotation -= Math.PI*2;
+  }
+  while (this.rotation < 0) {
+    this.rotation += Math.PI*2;
+  }
+  // Flip fists based on rotation
+  // >7/4pi, <1/4pi = frame 0
+  // >3/4pi, <5/4pi = frame 1
+  // Otherwise don't bother changing frame - prevent flickering frames
+  if (this.rotation > 0.75*Math.PI && this.rotation < 1.25*Math.PI) {
+    this.frame = 1 - this.frameD;
+  } else if (this.rotation > 1.75*Math.PI || this.rotation < 0.25*Math.PI) {
+    this.frame = this.frameD;
+  }
 };
