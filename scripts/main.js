@@ -33,7 +33,9 @@ GameState.prototype.create = function() {
     playerFists: this.game.physics.p2.createCollisionGroup()
   };
 
-  this.groups.bg.add(this.game.add.sprite(0, 0, 'bg'));
+  var bg = this.game.add.sprite(0, 0, 'bg');
+  bg.scale.setTo(4);
+  this.groups.bg.add(bg);
   //var sand = this.game.add.sprite(0, SCREEN_HEIGHT, 'sand');
   //sand.anchor.y = 1;
   //this.groups.sand.add(sand);
@@ -59,9 +61,9 @@ GameState.prototype.create = function() {
   filterVignette.amount = 0.5;
   filterVignette.alpha = 1.0;
   var filterFilmGrain = this.game.add.filter('FilmGrain');
-  filterFilmGrain.color = 0.6;
+  filterFilmGrain.color = 0.1;
   filterFilmGrain.amount = 0.1;
-  filterFilmGrain.luminance = 0.8;
+  filterFilmGrain.luminance = 0.3;
   this.game.stage.filters = [filterVignette, filterFilmGrain];
 /*
   this.bigTextStyle = {
