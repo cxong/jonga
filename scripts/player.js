@@ -1,6 +1,6 @@
-var PLAYER_ARM_LENGTH = 0.45;
+var PLAYER_ARM_LENGTH = 0.43;
 var PLAYER_FIST_SPEED = PLAYER_SCALE*20;
-var ARM_FORCE = 2000;
+var ARM_FORCE = 1000;
 
 var Player = function(
   game, group, collisionGroup, collidesWith,

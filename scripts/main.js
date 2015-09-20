@@ -112,28 +112,48 @@ GameState.prototype.update = function() {
   // Punch using keyboard
   // WSAD = left arm
   // cursors = right arm
+  var leftMoved = false;
   var leftMove = {x:0, y:0};
   if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
     leftMove.x = -1;
+    leftMoved = true;
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
     leftMove.x = 1;
+    leftMoved = true;
   }
   if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
     leftMove.y = -1;
+    leftMoved = true;
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
     leftMove.y = 1;
+    leftMoved = true;
+  }
+  // Default pose position
+  if (!leftMoved) {
+    leftMove.x = 0.1;
+    leftMove.y = -0.4;
   }
   this.player.leftFist.move(leftMove.x, leftMove.y);
+  var rightMoved = false;
   var rightMove = {x:0, y:0};
   if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
     rightMove.x = -1;
+    rightMoved = true;
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
     rightMove.x = 1;
+    rightMoved = true;
   }
   if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
     rightMove.y = -1;
+    rightMoved = true;
   } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
     rightMove.y = 1;
+    rightMoved = true;
+  }
+  // Default pose position
+  if (!rightMoved) {
+    rightMove.x = 0.2;
+    rightMove.y = 0.2;
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
   /*this.game.physics.arcade.overlap(
