@@ -3,13 +3,16 @@ var MOVE_DEADZONE = 30;
 var FIST_FORCE_MULTIPLIER = 100;
 var WHOOSH_SPEED_THRESHOLD = 770;
 
-var Fist = function(game, group, x, y, sprite, armLength, speed) {
+var Fist = function(
+  game, group, collisionGroup, collidesWith, x, y, sprite, armLength, speed) {
   Phaser.Sprite.call(this, game, x, y, sprite);
   this.anchor.setTo(0.5);
   this.scale.setTo(PLAYER_SCALE);
   game.physics.p2.enable(this);
   this.body.setCircle(this.width / 2);
   this.body.damping = 0.5;
+  this.body.setCollisionGroup(collisionGroup);
+  this.body.collides(collidesWith);
   group.add(this);
 
   this.armLength = armLength;

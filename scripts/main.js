@@ -22,14 +22,28 @@ GameState.prototype.create = function() {
     enemyFists: this.game.add.group(),
     playerFists: this.game.add.group()
   };
+  this.collisionGroups = {
+    enemies: this.game.physics.p2.createCollisionGroup(),
+    player: this.game.physics.p2.createCollisionGroup(),
+    enemyFists: this.game.physics.p2.createCollisionGroup(),
+    playerFists: this.game.physics.p2.createCollisionGroup()
+  };
 
   this.groups.bg.add(this.game.add.sprite(0, 0, 'bg'));
   //var sand = this.game.add.sprite(0, SCREEN_HEIGHT, 'sand');
   //sand.anchor.y = 1;
   //this.groups.sand.add(sand);
 
+  this.fist_generator = new FistGenerator(
+    this.game, this.groups.enemyFists, this.collisionGroups.enemyFists,
+    [this.collisionGroups.player, this.collisionGroups.playerFists]);
+
   this.player = new Player(
-    this.game, this.groups.player, this.groups.playerFists,
+    this.game,
+    this.groups.player, this.collisionGroups.player,
+    [this.collisionGroups.enemyFists],
+    this.groups.playerFists, this.collisionGroups.playerFists,
+    [this.collisionGroups.enemies, this.collisionGroups.enemyFists],
     SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50);
 
   this.game.input.onDown.add(function() {
@@ -121,4 +135,6 @@ GameState.prototype.update = function() {
   /*this.game.physics.arcade.overlap(
     this.groups.coconuts, this.groups.tourists, function(coconut, tourist) {
   }, null, this);*/
+
+  this.fist_generator.update();
 };
