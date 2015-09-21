@@ -20,3 +20,4 @@ Jonga is open source and made for [Mini LD 62](insert link here)
 - Sounds:
   - parry derived from [Weapons & Fighting » Fist Punch 3.mp3 by CGEffex](https://freesound.org/people/CGEffex/sounds/89769/) CC BY 3.0
   - whoosh derived from [heavy cloth rustle.wav by jacobzeier](https://freesound.org/people/jacobzeier/sounds/163164/) CC0
+  - wood derived from [Wood Impacts » Dropping Wood 4.wav by kwahmah_02](https://freesound.org/people/kwahmah_02/sounds/251365/) CC BY 3.0

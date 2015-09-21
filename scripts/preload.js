@@ -27,8 +27,8 @@ BasicGame.Preload.prototype = {
       this.game.load.spritesheet('fist', 'images/fist.png', 9, 9);
 
       this.game.load.audio('parry', 'sounds/parry.ogg');
+      this.game.load.audio('wood', 'sounds/wood.ogg');
       this.game.load.audio('whoosh', 'sounds/whoosh.ogg');
-      //this.game.load.audio('music', 'sounds/headinthesand.ogg');
 
       this.game.load.script('filter-vignette', 'scripts/Vignette.js');
       this.game.load.script('filter-filmgrain', 'scripts/FilmGrain.js');

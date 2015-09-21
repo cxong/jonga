@@ -1,6 +1,7 @@
 var GameState = function(game){};
 
 var parrySound;
+var woodSound;
 
 GameState.prototype.preload = function() {
 };
@@ -9,7 +10,7 @@ GameState.prototype.create = function() {
   this.game.stage.backgroundColor = 0xffffff;
   this.game.physics.startSystem(Phaser.Physics.P2JS);
 	//this.game.physics.p2.gravity.y = GRAVITY;
-  this.game.physics.p2.restitution = 2.0;
+  this.game.physics.p2.restitution = 1.0;
   this.game.physics.p2.setBoundsToWorld();
   this.game.physics.p2.setImpactEvents(true);
 
@@ -17,6 +18,7 @@ GameState.prototype.create = function() {
     //hit: this.game.add.sound('hit'),
   };
   parrySound = this.game.add.sound('parry');
+  woodSound = this.game.add.sound('wood');
 
   this.groups = {
     bg: this.game.add.group(),
@@ -176,13 +178,18 @@ GameState.prototype.update = function() {
   this.game.stage.filters[1].update();
 };
 
-var IMPACT_SOUND_THRESHOLD = 1500;
+var IMPACT_SOUND_THRESHOLD = 1000;
 
 function parry(b1, b2) {
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
   var v2 = new Phaser.Point(b2.velocity.x, b2.velocity.y);
   var impactForce = v1.getMagnitude() * b1.mass + v2.getMagnitude() * b2.mass;
   if (impactForce > IMPACT_SOUND_THRESHOLD) {
-    parrySound.play();
+    if (b2.sprite.key == 'dummy_arm_upper' ||
+      b2.sprite.key == 'dummy_arm_lower') {
+      woodSound.play();
+    } else {
+      parrySound.play();
+    }
   }
 }
