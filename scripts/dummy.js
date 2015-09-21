@@ -18,9 +18,9 @@ var Dummy = function(game, group, collisionGroup, collidesWith, x, y) {
     return arm;
   };
   this.armUpper = setupArm(
-    x + 13*PLAYER_SCALE, y - 22*PLAYER_SCALE, 'dummy_arm_upper');
+    x + 9*PLAYER_SCALE, y - 22*PLAYER_SCALE, 'dummy_arm_upper');
   this.armLower = setupArm(
-    x + 11*PLAYER_SCALE, y + 6*PLAYER_SCALE, 'dummy_arm_lower');
+    x + 8*PLAYER_SCALE, y + 2*PLAYER_SCALE, 'dummy_arm_lower');
 };
 Dummy.prototype = Object.create(Phaser.Sprite.prototype);
 Dummy.prototype.constructor = Dummy;

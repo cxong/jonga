@@ -57,7 +57,7 @@ GameState.prototype.create = function() {
   this.dummy = new Dummy(
     this.game, this.groups.enemyFists, this.collisionGroups.enemyFists,
     [this.collisionGroups.player, this.collisionGroups.playerFists],
-    SCREEN_WIDTH * 0.2, SCREEN_HEIGHT / 2 + 40);
+    SCREEN_WIDTH * 0.3, SCREEN_HEIGHT / 2 + 57);
 
   this.game.input.onDown.add(function() {
     this.tryStart();
