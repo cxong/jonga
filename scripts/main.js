@@ -52,6 +52,11 @@ GameState.prototype.create = function() {
     [this.collisionGroups.enemies, this.collisionGroups.enemyFists],
     SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50);
 
+  this.dummy = new Dummy(
+    this.game, this.groups.enemyFists, this.collisionGroups.enemyFists,
+    [this.collisionGroups.player, this.collisionGroups.playerFists],
+    SCREEN_WIDTH * 0.2, SCREEN_HEIGHT / 2 + 40);
+
   this.game.input.onDown.add(function() {
     this.tryStart();
   }, this);
@@ -93,7 +98,6 @@ GameState.prototype.start = function() {
 
   this.timeLast = this.game.time.now;
   this.timeLastHalf = this.timeLast;
-  //this.music.play('', 0, 1, true);
 
   this.title.alpha = 0;
 
@@ -166,9 +170,6 @@ GameState.prototype.update = function() {
     rightMove.y = 0.2;
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
-  /*this.game.physics.arcade.overlap(
-    this.groups.coconuts, this.groups.tourists, function(coconut, tourist) {
-  }, null, this);*/
 
   this.fist_generator.update();
 
