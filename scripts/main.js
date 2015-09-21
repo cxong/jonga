@@ -175,6 +175,13 @@ GameState.prototype.update = function() {
   this.game.stage.filters[1].update();
 };
 
-function parry(armature, body2) {
-  parrySound.play();
+var IMPACT_SOUND_THRESHOLD = 1500;
+
+function parry(b1, b2) {
+  var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
+  var v2 = new Phaser.Point(b2.velocity.x, b2.velocity.y);
+  var impactForce = v1.getMagnitude() * b1.mass + v2.getMagnitude() * b2.mass;
+  if (impactForce > IMPACT_SOUND_THRESHOLD) {
+    parrySound.play();
+  }
 }
