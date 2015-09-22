@@ -24,9 +24,10 @@ GameState.prototype.create = function() {
     bg: this.game.add.group(),
     title: this.game.add.group(),
     enemies: this.game.add.group(),
+    playerFistsBack: this.game.add.group(),
     player: this.game.add.group(),
-    enemyFists: this.game.add.group(),
-    playerFists: this.game.add.group()
+    playerFists: this.game.add.group(),
+    enemyFists: this.game.add.group()
   };
   this.collisionGroups = {
     enemies: this.game.physics.p2.createCollisionGroup(),
@@ -50,7 +51,8 @@ GameState.prototype.create = function() {
     this.game,
     this.groups.player, this.collisionGroups.player,
     [this.collisionGroups.enemyFists],
-    this.groups.playerFists, this.collisionGroups.playerFists,
+    this.groups.playerFistsBack, this.groups.playerFists,
+    this.collisionGroups.playerFists,
     [this.collisionGroups.enemies, this.collisionGroups.enemyFists],
     SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50);
 
@@ -146,7 +148,7 @@ GameState.prototype.update = function() {
   }
   // Default pose position
   if (!leftMoved) {
-    leftMove.x = 0.1;
+    leftMove.x = 0;
     leftMove.y = -0.4;
   }
   this.player.leftFist.move(leftMove.x, leftMove.y);
@@ -168,7 +170,7 @@ GameState.prototype.update = function() {
   }
   // Default pose position
   if (!rightMoved) {
-    rightMove.x = 0.2;
+    rightMove.x = 0.3;
     rightMove.y = 0.2;
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
@@ -178,7 +180,7 @@ GameState.prototype.update = function() {
   this.game.stage.filters[1].update();
 };
 
-var IMPACT_SOUND_THRESHOLD = 1000;
+var IMPACT_SOUND_THRESHOLD = 700;
 
 function parry(b1, b2) {
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);

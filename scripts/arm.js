@@ -1,6 +1,5 @@
 var Arm = function(
-  game, group, collisionGroup, collidesWith, collideFunc,
-  parent, child, x, y, sprite) {
+  game, group, collisionGroup, collidesWith, collideFunc, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite);
   this.anchor.setTo(0.5);
   this.scale.setTo(PLAYER_SCALE);
