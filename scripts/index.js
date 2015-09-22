@@ -1,6 +1,6 @@
 window.onload = function() { setTimeout(function () {
     document.getElementById('fontLoader').style.display = 'none';
-    var game = new Phaser.Game(SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.AUTO,
+    var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO,
                                'gameContainer', null, false,
                                false);
     game.state.add('boot', BasicGame.Boot);

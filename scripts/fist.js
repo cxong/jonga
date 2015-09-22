@@ -1,7 +1,7 @@
-var DEADZONE = 5;
-var MOVE_DEADZONE = 20;
+var DEADZONE = PLAYER_SCALE;
+var MOVE_DEADZONE = 5 * PLAYER_SCALE;
 var FIST_FORCE_MULTIPLIER = 100;
-var WHOOSH_SPEED_THRESHOLD = 770;
+var WHOOSH_SPEED_THRESHOLD = 190 * PLAYER_SCALE;
 
 var Fist = function(
   game, group, collisionGroup, collidesWith, collideFunc, x, y, sprite, frame,

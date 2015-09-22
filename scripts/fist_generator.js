@@ -13,13 +13,13 @@ FistGenerator.prototype.update = function() {
     var x, dx;
     if (Math.random() < 0.5) {
       x = -30;
-      dx = SCREEN_WIDTH / 2;
+      dx = GAME_WIDTH / 2;
     } else {
-      x = SCREEN_WIDTH + 30;
-      dx = -SCREEN_WIDTH / 2;
+      x = GAME_WIDTH + 30;
+      dx = -GAME_WIDTH / 2;
     }
-    y = Math.random() * SCREEN_HEIGHT;
-    dy = SCREEN_HEIGHT / 2 - y;
+    y = Math.random() * GAME_HEIGHT;
+    dy = GAME_HEIGHT / 2 - y;
     dx *= 0.2;
     dy *= 0.2;
     new Thing(

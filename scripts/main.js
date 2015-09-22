@@ -36,16 +36,14 @@ GameState.prototype.create = function() {
   };
 
   var bg = this.game.add.sprite(0, 0, 'bg');
-  bg.scale.setTo(4);
+  bg.scale.setTo(PLAYER_SCALE);
   this.groups.bg.add(bg);
-  //var sand = this.game.add.sprite(0, SCREEN_HEIGHT, 'sand');
-  //sand.anchor.y = 1;
-  //this.groups.sand.add(sand);
 
   this.fist_generator = new FistGenerator(
     this.game, this.groups.armsFront, this.collisionGroups.enemyFists,
     [this.collisionGroups.player, this.collisionGroups.playerFists]);
 
+  var y = GAME_HEIGHT / 2 + 25;
   this.player = new Player(
     this.game,
     this.groups.bodies, this.collisionGroups.player,
@@ -53,7 +51,7 @@ GameState.prototype.create = function() {
     this.groups.armsBack, this.groups.armsFront,
     this.collisionGroups.playerFists,
     [this.collisionGroups.enemies, this.collisionGroups.enemyFists],
-    SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50);
+    GAME_WIDTH / 2, y);
 
   this.enemy = new Player(
     this.game,
@@ -62,12 +60,12 @@ GameState.prototype.create = function() {
     this.groups.armsBack, this.groups.armsFront,
     this.collisionGroups.enemyFists,
     [this.collisionGroups.player, this.collisionGroups.playerFists],
-    SCREEN_WIDTH / 2 + 150, SCREEN_HEIGHT / 2 + 50);
+    GAME_WIDTH / 2 + 150, y);
 
   this.dummy = new Dummy(
     this.game, this.groups.bodies, this.collisionGroups.enemyFists,
     [this.collisionGroups.player, this.collisionGroups.playerFists],
-    SCREEN_WIDTH * 0.3, SCREEN_HEIGHT / 2 + 57);
+    GAME_WIDTH * 0.3, y + 3);
 
   this.game.input.onDown.add(function() {
     this.tryStart();
@@ -87,8 +85,8 @@ GameState.prototype.create = function() {
   filterVignette.alpha = 1.0;
   var filterFilmGrain = this.game.add.filter('FilmGrain');
   filterFilmGrain.color = 0.1;
-  filterFilmGrain.amount = 0.1;
-  filterFilmGrain.luminance = 0.3;
+  filterFilmGrain.amount = 0.2;
+  filterFilmGrain.luminance = 0.12;
   this.game.stage.filters = [filterVignette, filterFilmGrain];
 /*
   this.bigTextStyle = {
@@ -104,7 +102,7 @@ GameState.prototype.create = function() {
   */
 
   this.title = this.game.add.sprite(
-    SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 'title');
+    GAME_WIDTH / 2, GAME_HEIGHT / 2, 'title');
   this.title.anchor.setTo(0.5);
   this.groups.title.add(this.title);
 
@@ -199,7 +197,7 @@ GameState.prototype.update = function() {
   this.game.stage.filters[1].update();
 };
 
-var IMPACT_SOUND_THRESHOLD = 700;
+var IMPACT_SOUND_THRESHOLD = 190 * PLAYER_SCALE;
 
 function parry(b1, b2) {
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
