@@ -23,11 +23,9 @@ GameState.prototype.create = function() {
   this.groups = {
     bg: this.game.add.group(),
     title: this.game.add.group(),
-    enemies: this.game.add.group(),
-    playerFistsBack: this.game.add.group(),
-    player: this.game.add.group(),
-    playerFists: this.game.add.group(),
-    enemyFists: this.game.add.group()
+    armsBack: this.game.add.group(),
+    bodies: this.game.add.group(),
+    armsFront: this.game.add.group()
   };
   this.collisionGroups = {
     enemies: this.game.physics.p2.createCollisionGroup(),
@@ -44,20 +42,29 @@ GameState.prototype.create = function() {
   //this.groups.sand.add(sand);
 
   this.fist_generator = new FistGenerator(
-    this.game, this.groups.enemyFists, this.collisionGroups.enemyFists,
+    this.game, this.groups.armsFront, this.collisionGroups.enemyFists,
     [this.collisionGroups.player, this.collisionGroups.playerFists]);
 
   this.player = new Player(
     this.game,
-    this.groups.player, this.collisionGroups.player,
+    this.groups.bodies, this.collisionGroups.player,
     [this.collisionGroups.enemyFists],
-    this.groups.playerFistsBack, this.groups.playerFists,
+    this.groups.armsBack, this.groups.armsFront,
     this.collisionGroups.playerFists,
     [this.collisionGroups.enemies, this.collisionGroups.enemyFists],
     SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50);
 
+  this.enemy = new Player(
+    this.game,
+    this.groups.bodies, this.collisionGroups.enemy,
+    [this.collisionGroups.playerFists],
+    this.groups.armsBack, this.groups.armsFront,
+    this.collisionGroups.enemyFists,
+    [this.collisionGroups.player, this.collisionGroups.playerFists],
+    SCREEN_WIDTH / 2 + 150, SCREEN_HEIGHT / 2 + 50);
+
   this.dummy = new Dummy(
-    this.game, this.groups.enemyFists, this.collisionGroups.enemyFists,
+    this.game, this.groups.bodies, this.collisionGroups.enemyFists,
     [this.collisionGroups.player, this.collisionGroups.playerFists],
     SCREEN_WIDTH * 0.3, SCREEN_HEIGHT / 2 + 57);
 
@@ -174,6 +181,9 @@ GameState.prototype.update = function() {
     rightMove.y = 0.2;
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
+
+  this.enemy.leftFist.move(0, 0);
+  this.enemy.rightFist.move(0, 0);
 
   this.fist_generator.update();
 

@@ -19,7 +19,7 @@ var Fist = function(
 
   this.armLength = armLength;
   this.speed = speed;
-  this.movePos = new Phaser.Point();
+  this.movePos = new Phaser.Point(0, 0);
   this.shoulderPos = new Phaser.Point(x, y);
   this.arm = arm;
 
