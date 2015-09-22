@@ -1,9 +1,8 @@
 var Arm = function(
   game, group, collisionGroup, collidesWith, collideFunc, x, y, sprite) {
   Phaser.Sprite.call(this, game, x, y, sprite);
-  this.anchor.setTo(0.5);
-  this.scale.setTo(PLAYER_SCALE);
   game.physics.p2.enable(this, false);
+  this.scale.setTo(PLAYER_SCALE);
   this.body.setRectangle(this.width, this.height);
   this.body.setCollisionGroup(collisionGroup);
   this.body.collides(collidesWith, collideFunc, this);

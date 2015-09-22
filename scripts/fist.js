@@ -7,9 +7,8 @@ var Fist = function(
   game, group, collisionGroup, collidesWith, collideFunc, x, y, sprite, frame,
   armLength, arm, speed) {
   Phaser.Sprite.call(this, game, x, y, sprite);
-  this.anchor.setTo(0.5);
-  this.scale.setTo(PLAYER_SCALE);
   game.physics.p2.enable(this);
+  this.scale.setTo(PLAYER_SCALE);
   this.body.setCircle(this.width / 2);
   this.body.damping = 0.5;
   this.body.setCollisionGroup(collisionGroup);

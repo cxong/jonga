@@ -51,7 +51,7 @@ GameState.prototype.create = function() {
     this.groups.armsBack, this.groups.armsFront,
     this.collisionGroups.playerFists,
     [this.collisionGroups.enemies, this.collisionGroups.enemyFists],
-    GAME_WIDTH / 2, y);
+    GAME_WIDTH / 2, y, 1);
 
   this.enemy = new Player(
     this.game,
@@ -60,7 +60,7 @@ GameState.prototype.create = function() {
     this.groups.armsBack, this.groups.armsFront,
     this.collisionGroups.enemyFists,
     [this.collisionGroups.player, this.collisionGroups.playerFists],
-    GAME_WIDTH / 2 + 150, y);
+    GAME_WIDTH / 2 + 80, y, -1);
 
   this.dummy = new Dummy(
     this.game, this.groups.bodies, this.collisionGroups.enemyFists,

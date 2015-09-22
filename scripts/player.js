@@ -5,28 +5,33 @@ var TORSO_ROTATE_SPEED = 0.06;
 
 var Player = function(
   game, group, collisionGroup, collidesWith,
-  fists_back, fists, fistsCollisionGroup, fistsCollidesWith, x, y) {
+  fists_back, fists, fistsCollisionGroup, fistsCollidesWith, x, y, xscale) {
   Phaser.Sprite.call(this, game, x, y, 'player');
   this.anchor.setTo(0.5);
-  this.scale.setTo(PLAYER_SCALE);
   // TODO: player body
   game.physics.p2.enable(this, false);
+  this.scale.setTo(PLAYER_SCALE);
+  this.scale.x *= xscale;
   this.body.static = true;
   group.add(this);
 
-  this.torso = game.add.sprite(x - 2, y - 8, 'torso');
-  this.torso.scale.setTo(PLAYER_SCALE);
+  this.torso = game.add.sprite(x - 2*xscale, y - 8, 'torso');
   game.physics.p2.enable(this.torso, false);
+  this.torso.scale.setTo(PLAYER_SCALE);
+  this.torso.scale.x *= xscale;
   this.torso.anchor.setTo(0.5, 0.9);
   this.torso.body.static = true;
   this.torso.body.rotation = 0.3;
   group.add(this.torso);
 
-  this.head = game.add.sprite(this.torso.x + 3, this.torso.y - 60, 'head');
-  this.head.scale.setTo(PLAYER_SCALE);
+  this.head = game.add.sprite(
+    this.torso.x + 3*xscale, this.torso.y - 60, 'head');
   game.physics.p2.enable(this.head, false);
+  this.head.scale.setTo(PLAYER_SCALE);
+  this.head.scale.x *= xscale;
   game.physics.p2.createRevoluteConstraint(
-    this.torso, [3, -1.05*this.torso.height], this.head, [0, 0], ARM_FORCE);
+    this.torso, [3*xscale, -1.05*this.torso.height], this.head, [0, 0],
+    ARM_FORCE);
   this.head.body.setCircle(this.head.width / 2);
   this.head.body.setCollisionGroup(collisionGroup);
   //this.head.body.collides(collidesWith, null, this);
