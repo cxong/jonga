@@ -13,6 +13,7 @@ GameState.prototype.create = function() {
   this.game.physics.p2.restitution = 1.0;
   this.game.physics.p2.setBoundsToWorld();
   this.game.physics.p2.setImpactEvents(true);
+  this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
   this.sounds = {
     //hit: this.game.add.sound('hit'),
@@ -70,6 +71,14 @@ GameState.prototype.create = function() {
 
   this.game.input.onDown.add(function() {
     this.tryStart();
+  }, this);
+
+  this.game.input.keyboard.addKey(Phaser.Keyboard.F).onDown.add(function(key) {
+    if (this.game.scale.isFullScreen) {
+        this.game.scale.stopFullScreen();
+    } else {
+        this.game.scale.startFullScreen(false);
+    }
   }, this);
 
   var filterVignette = this.game.add.filter('Vignette');
