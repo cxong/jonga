@@ -42,7 +42,8 @@ Fist.prototype.move = function(x, y) {
 
 Fist.prototype.update = function() {
   // accelerate towards target
-  var target = this.movePos
+  var movePos = new Phaser.Point(this.movePos.x, this.movePos.y);
+  var target = movePos
     .multiply(this.armLength, this.armLength)
     .add(this.shoulderPos.x, this.shoulderPos.y);
   var d = target.subtract(this.x, this.y);

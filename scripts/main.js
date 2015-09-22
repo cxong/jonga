@@ -55,7 +55,7 @@ GameState.prototype.create = function() {
 
   this.enemy = new Player(
     this.game,
-    this.groups.bodies, this.collisionGroups.enemy,
+    this.groups.bodies, this.collisionGroups.enemies,
     [this.collisionGroups.playerFists],
     this.groups.armsBack, this.groups.armsFront,
     this.collisionGroups.enemyFists,

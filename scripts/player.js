@@ -1,6 +1,7 @@
-var PLAYER_ARM_LENGTH = 0.35;
+var PLAYER_ARM_LENGTH = 40*PLAYER_SCALE;
 var PLAYER_FIST_SPEED = PLAYER_SCALE*20;
 var ARM_FORCE = 1000;
+var TORSO_ROTATE_SPEED = 0.06;
 
 var Player = function(
   game, group, collisionGroup, collidesWith,
@@ -13,11 +14,30 @@ var Player = function(
   this.body.static = true;
   group.add(this);
 
+  this.torso = game.add.sprite(x - 2, y - 8, 'torso');
+  this.torso.scale.setTo(PLAYER_SCALE);
+  game.physics.p2.enable(this.torso, false);
+  this.torso.anchor.setTo(0.5, 0.9);
+  this.torso.body.static = true;
+  this.torso.body.rotation = 0.3;
+  group.add(this.torso);
+
+  this.head = game.add.sprite(this.torso.x + 3, this.torso.y - 60, 'head');
+  this.head.scale.setTo(PLAYER_SCALE);
+  game.physics.p2.enable(this.head, false);
+  game.physics.p2.createRevoluteConstraint(
+    this.torso, [3, -1.05*this.torso.height], this.head, [0, 0], ARM_FORCE);
+  this.head.body.setCircle(this.head.width / 2);
+  this.head.body.setCollisionGroup(collisionGroup);
+  //this.head.body.collides(collidesWith, null, this);
+  this.head.body.fixedRotation = true;
+  group.add(this.head);
+
   // Shoulder positions
-  var sx = 0.05*this.width;
-  var sy = -0.27*this.height;
-  var leftShoulder = new Phaser.Point(x - sx, y + sy);
-  var rightShoulder = new Phaser.Point(x + sx, y + sy);
+  var sx = 0.2*this.torso.width;
+  var sy = -0.7*this.torso.height;
+  var leftShoulder = new Phaser.Point(this.torso.x - sx, this.torso.y + sy);
+  var rightShoulder = new Phaser.Point(this.torso.x + sx, this.torso.y + sy);
 
   // Add some arms and fists
   var addArm = function(player, layer, shoulder, _sx, frame) {
@@ -25,7 +45,8 @@ var Player = function(
       game, layer, fistsCollisionGroup, fistsCollidesWith, parry,
       shoulder.x, shoulder.y, 'arm_upper');
     game.physics.p2.createRevoluteConstraint(
-      player, [_sx, sy], upper, [-upper.width / 2 + upper.height / 2, 0],
+      player.torso, [_sx, sy],
+      upper, [-upper.width / 2 + upper.height / 2, 0],
       ARM_FORCE);
     var lower = new Arm(
       game, layer, fistsCollisionGroup, fistsCollidesWith, parry,
@@ -35,7 +56,7 @@ var Player = function(
     var fist = new Fist(
       game, layer, fistsCollisionGroup, fistsCollidesWith, parry,
       shoulder.x, shoulder.y, 'fist', frame,
-      PLAYER_ARM_LENGTH*player.height, lower, PLAYER_FIST_SPEED);
+      PLAYER_ARM_LENGTH, lower, PLAYER_FIST_SPEED);
     game.physics.p2.createRevoluteConstraint(
       lower, [lower.width / 2 + fist.width / 3, 0], fist, [0, 0], ARM_FORCE);
     return [upper, lower, fist];
@@ -53,5 +74,14 @@ Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.update = function() {
-  //
+  // Update torso rotation based on the two fists' move pos
+  var averageFists = (this.leftFist.movePos.x + this.rightFist.movePos.x) / 2;
+  var torsoRotation = averageFists * 0.6;
+  if (this.torso.body.rotation + TORSO_ROTATE_SPEED < torsoRotation) {
+    this.torso.body.rotation += TORSO_ROTATE_SPEED;
+  } else if (this.torso.body.rotation - TORSO_ROTATE_SPEED > torsoRotation) {
+    this.torso.body.rotation -= TORSO_ROTATE_SPEED;
+  } else {
+    this.torso.body.rotation = torsoRotation;
+  }
 };
