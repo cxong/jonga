@@ -1,5 +1,3 @@
-var SCREEN_WIDTH = 800;
-var SCREEN_HEIGHT = 480;
 var GAME_WIDTH = 400;
 var GAME_HEIGHT = 240;
 

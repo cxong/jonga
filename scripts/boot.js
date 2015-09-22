@@ -12,8 +12,6 @@ BasicGame.Boot.prototype = {
         this.game.stage.backgroundColor = 0x1b1b19;
         this.input.maxPointers = 1;
         this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        this.game.scale.width = SCREEN_WIDTH;
-        this.game.scale.height = SCREEN_HEIGHT;
 
         this.state.start('preload');
     }
