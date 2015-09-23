@@ -2,6 +2,7 @@ var GameState = function(game){};
 
 var parrySound;
 var woodSound;
+var move = moveList.roundhousePunch();
 
 GameState.prototype.preload = function() {
 };
@@ -14,6 +15,8 @@ GameState.prototype.create = function() {
   this.game.physics.p2.setBoundsToWorld();
   this.game.physics.p2.setImpactEvents(true);
   this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+  this.game.time.slowMotion = 2.0;
 
   this.sounds = {
     //hit: this.game.add.sound('hit'),
@@ -38,10 +41,6 @@ GameState.prototype.create = function() {
   var bg = this.game.add.sprite(0, 0, 'bg');
   bg.scale.setTo(PLAYER_SCALE);
   this.groups.bg.add(bg);
-
-  this.fist_generator = new FistGenerator(
-    this.game, this.groups.armsFront, this.collisionGroups.enemyFists,
-    [this.collisionGroups.player, this.collisionGroups.playerFists]);
 
   var y = GAME_HEIGHT / 2 + 25;
   this.player = new Player(
@@ -189,11 +188,14 @@ GameState.prototype.update = function() {
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
 
-  this.enemy.leftFist.move(0, 0);
-  this.enemy.rightFist.move(0, 0);
-
-  this.fist_generator.update();
-
+  move.update();
+  if (move.isDone()) {
+    this.enemy.leftFist.move(0, 0.3);
+    this.enemy.rightFist.move(0, 0.3);
+    move = randomMove();
+  }
+  move.apply(this.enemy.leftFist, this.enemy.rightFist);
+  
   this.game.stage.filters[1].update();
 };
 
