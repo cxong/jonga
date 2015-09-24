@@ -48,14 +48,14 @@ GameState.prototype.create = function() {
     this.game,
     this.groups.bodies, this.collisionGroups.players,
     this.groups.armsBack, this.groups.armsFront,
-    [this.collisionGroups.enemies],
+    [this.collisionGroups.enemies], this.parry, this,
     GAME_WIDTH / 2, y, 1);
 
   this.enemy = new Player(
     this.game,
     this.groups.bodies, this.collisionGroups.enemies,
     this.groups.armsBack, this.groups.armsFront,
-    [this.collisionGroups.players],
+    [this.collisionGroups.players], this.parry, this,
     GAME_WIDTH / 2 + 80, y, -1);
 
   this.dummy = new Dummy(
@@ -197,7 +197,7 @@ GameState.prototype.update = function() {
 
 var IMPACT_SOUND_THRESHOLD = 190 * PLAYER_SCALE;
 
-function parry(b1, b2) {
+GameState.prototype.parry = function(b1, b2) {
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
   var v2 = new Phaser.Point(b2.velocity.x, b2.velocity.y);
   var impactForce = v1.getMagnitude() * b1.mass + v2.getMagnitude() * b2.mass;
@@ -208,6 +208,13 @@ function parry(b1, b2) {
     } else if (b2.sprite.key == 'torso' ||
       b2.sprite.key == 'head') {
       punchSound.play();
+      // Being punched pushes the player back
+      if (b2.sprite == this.player.torso ||
+        b2.sprite == this.player.head) {
+        this.player.body.x -= 10;
+      } else {
+        this.enemy.body.x += 10;
+      }
     } else {
       parrySound.play();
     }
