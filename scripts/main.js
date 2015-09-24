@@ -1,6 +1,7 @@
 var GameState = function(game){};
 
 var parrySound;
+var punchSound;
 var woodSound;
 var move = moveList.roundhousePunch();
 
@@ -22,20 +23,20 @@ GameState.prototype.create = function() {
     //hit: this.game.add.sound('hit'),
   };
   parrySound = this.game.add.sound('parry');
+  punchSound = this.game.add.sound('punch');
   woodSound = this.game.add.sound('wood');
 
   this.groups = {
     bg: this.game.add.group(),
     title: this.game.add.group(),
+    dummy: this.game.add.group(),
     armsBack: this.game.add.group(),
     bodies: this.game.add.group(),
     armsFront: this.game.add.group()
   };
   this.collisionGroups = {
     enemies: this.game.physics.p2.createCollisionGroup(),
-    player: this.game.physics.p2.createCollisionGroup(),
-    enemyFists: this.game.physics.p2.createCollisionGroup(),
-    playerFists: this.game.physics.p2.createCollisionGroup()
+    players: this.game.physics.p2.createCollisionGroup()
   };
 
   var bg = this.game.add.sprite(0, 0, 'bg');
@@ -45,26 +46,21 @@ GameState.prototype.create = function() {
   var y = GAME_HEIGHT / 2 + 25;
   this.player = new Player(
     this.game,
-    this.groups.bodies, this.collisionGroups.player,
-    [this.collisionGroups.enemyFists],
+    this.groups.bodies, this.collisionGroups.players,
     this.groups.armsBack, this.groups.armsFront,
-    this.collisionGroups.playerFists,
-    [this.collisionGroups.enemies, this.collisionGroups.enemyFists],
+    [this.collisionGroups.enemies],
     GAME_WIDTH / 2, y, 1);
 
   this.enemy = new Player(
     this.game,
     this.groups.bodies, this.collisionGroups.enemies,
-    [this.collisionGroups.playerFists],
     this.groups.armsBack, this.groups.armsFront,
-    this.collisionGroups.enemyFists,
-    [this.collisionGroups.player, this.collisionGroups.playerFists],
+    [this.collisionGroups.players],
     GAME_WIDTH / 2 + 80, y, -1);
 
   this.dummy = new Dummy(
-    this.game, this.groups.bodies, this.collisionGroups.enemyFists,
-    [this.collisionGroups.player, this.collisionGroups.playerFists],
-    GAME_WIDTH * 0.3, y + 3);
+    this.game, this.groups.dummy, this.collisionGroups.enemies,
+    [this.collisionGroups.players], GAME_WIDTH * 0.3, y + 3);
 
   this.game.input.onDown.add(function() {
     this.tryStart();
@@ -84,7 +80,7 @@ GameState.prototype.create = function() {
   filterVignette.alpha = 1.0;
   var filterFilmGrain = this.game.add.filter('FilmGrain');
   filterFilmGrain.color = 0.1;
-  filterFilmGrain.amount = 0.2;
+  filterFilmGrain.amount = 0.1;
   filterFilmGrain.luminance = 0.12;
   this.game.stage.filters = [filterVignette, filterFilmGrain];
 /*
@@ -111,7 +107,7 @@ GameState.prototype.create = function() {
 };
 
 GameState.prototype.start = function() {
-  //this.groups.tourists.removeAll();
+  this.groups.dummy.removeAll();
 
   this.timeLast = this.game.time.now;
   this.timeLastHalf = this.timeLast;
@@ -195,7 +191,7 @@ GameState.prototype.update = function() {
     move = randomMove();
   }
   move.apply(this.enemy.leftFist, this.enemy.rightFist);
-  
+
   this.game.stage.filters[1].update();
 };
 
@@ -209,6 +205,9 @@ function parry(b1, b2) {
     if (b2.sprite.key == 'dummy_arm_upper' ||
       b2.sprite.key == 'dummy_arm_lower') {
       woodSound.play();
+    } else if (b2.sprite.key == 'torso' ||
+      b2.sprite.key == 'head') {
+      punchSound.play();
     } else {
       parrySound.play();
     }
