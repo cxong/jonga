@@ -97,3 +97,21 @@ Player.prototype.update = function() {
     this.torso.body.rotation = torsoRotation;
   }
 };
+
+var IMPACT_PUSHBACK_FACTOR = 0.03;
+
+Player.prototype.impulse = function(x) {
+  var dx = -this.scale.x * x * IMPACT_PUSHBACK_FACTOR;
+  this.body.x += dx;
+  this.torso.body.x += dx;
+  this.head.body.x += dx;
+};
+
+var APPROACH_SPEED = 0.3;
+
+Player.prototype.approach = function() {
+  var dx = this.scale.x * APPROACH_SPEED;
+  this.body.x += dx;
+  this.torso.body.x += dx;
+  this.head.body.x += dx;
+};

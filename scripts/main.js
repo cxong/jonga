@@ -1,8 +1,5 @@
 var GameState = function(game){};
 
-var parrySound;
-var punchSound;
-var woodSound;
 var move = moveList.roundhousePunch();
 
 GameState.prototype.preload = function() {
@@ -20,11 +17,10 @@ GameState.prototype.create = function() {
   this.game.time.slowMotion = 2.0;
 
   this.sounds = {
-    //hit: this.game.add.sound('hit'),
+    parry: this.game.add.sound('parry'),
+    punch: this.game.add.sound('punch'),
+    wood: this.game.add.sound('wood'),
   };
-  parrySound = this.game.add.sound('parry');
-  punchSound = this.game.add.sound('punch');
-  woodSound = this.game.add.sound('wood');
 
   this.groups = {
     bg: this.game.add.group(),
@@ -192,6 +188,13 @@ GameState.prototype.update = function() {
   }
   move.apply(this.enemy.leftFist, this.enemy.rightFist);
 
+  // Players move towards each other as long as they are far enough
+  var distance = Math.abs(this.player.body.x - this.enemy.body.x);
+  if (distance > 40*PLAYER_SCALE) {
+    this.player.approach();
+    this.enemy.approach();
+  }
+
   this.game.stage.filters[1].update();
 };
 
@@ -204,19 +207,19 @@ GameState.prototype.parry = function(b1, b2) {
   if (impactForce > IMPACT_SOUND_THRESHOLD) {
     if (b2.sprite.key == 'dummy_arm_upper' ||
       b2.sprite.key == 'dummy_arm_lower') {
-      woodSound.play();
+      this.sounds.wood.play();
     } else if (b2.sprite.key == 'torso' ||
       b2.sprite.key == 'head') {
-      punchSound.play();
+      this.sounds.punch.play();
       // Being punched pushes the player back
       if (b2.sprite == this.player.torso ||
         b2.sprite == this.player.head) {
-        this.player.body.x -= 10;
+        this.player.impulse(impactForce);
       } else {
-        this.enemy.body.x += 10;
+        this.enemy.impulse(impactForce);
       }
     } else {
-      parrySound.play();
+      this.sounds.parry.play();
     }
   }
 }
