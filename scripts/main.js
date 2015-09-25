@@ -103,7 +103,7 @@ GameState.prototype.create = function() {
 };
 
 GameState.prototype.start = function() {
-  this.groups.dummy.removeAll();
+  this.groups.dummy.removeAll(true);
 
   this.timeLast = this.game.time.now;
   this.timeLastHalf = this.timeLast;
