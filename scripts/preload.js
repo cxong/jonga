@@ -32,6 +32,7 @@ BasicGame.Preload.prototype = {
       this.game.load.audio('punch', 'sounds/punch.ogg');
       this.game.load.audio('wood', 'sounds/wood.ogg');
       this.game.load.audio('whoosh', 'sounds/whoosh.ogg');
+      this.game.load.audio('taiko-drums', 'sounds/taiko-drums.ogg');
 
       this.game.load.script('filter-vignette', 'scripts/Vignette.js');
       this.game.load.script('filter-filmgrain', 'scripts/FilmGrain.js');

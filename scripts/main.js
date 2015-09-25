@@ -92,6 +92,8 @@ GameState.prototype.create = function() {
   };
   */
 
+  this.music = this.game.add.audio('taiko-drums');
+
   this.title = this.game.add.sprite(
     GAME_WIDTH / 2, GAME_HEIGHT / 2, 'title');
   this.title.anchor.setTo(0.5);
@@ -109,6 +111,7 @@ GameState.prototype.start = function() {
   this.timeLastHalf = this.timeLast;
 
   this.title.alpha = 0;
+  this.music.play('', 0, 1, true);
 
   this.started = true;
 };
