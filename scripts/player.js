@@ -67,7 +67,8 @@ var Player = function(
     var fist = new Fist(
       game, layer,
       collisionGroup, fistsCollidesWith, collideFunc, collideContext,
-      shoulder.x, shoulder.y, 'fist', frame,
+      shoulder.x - player.x, shoulder.y - player.y, player,
+      'fist', frame,
       PLAYER_ARM_LENGTH, lower, PLAYER_FIST_SPEED);
     game.physics.p2.createRevoluteConstraint(
       lower, [lower.width / 2 + fist.width / 3, 0], fist, [0, 0], ARM_FORCE);

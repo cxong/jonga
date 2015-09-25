@@ -6,9 +6,9 @@ var WHOOSH_SPEED_THRESHOLD = 190 * PLAYER_SCALE;
 var Fist = function(
   game, group,
   collisionGroup, collidesWith, collideFunc, collideContext,
-  x, y, sprite, frame,
+  shoulderX, shoulderY, player, sprite, frame,
   armLength, arm, speed) {
-  Phaser.Sprite.call(this, game, x, y, sprite);
+  Phaser.Sprite.call(this, game, shoulderX, shoulderY, sprite);
   game.physics.p2.enable(this);
   this.scale.setTo(PLAYER_SCALE);
   this.body.setCircle(this.width / 2);
@@ -21,7 +21,8 @@ var Fist = function(
   this.armLength = armLength;
   this.speed = speed;
   this.movePos = new Phaser.Point(0, 0);
-  this.shoulderPos = new Phaser.Point(x, y);
+  this.shoulderPos = new Phaser.Point(shoulderX, shoulderY);
+  this.player = player;
   this.arm = arm;
 
   this.parrySound = game.add.sound('parry');
@@ -44,9 +45,11 @@ Fist.prototype.move = function(x, y) {
 Fist.prototype.update = function() {
   // accelerate towards target
   var movePos = new Phaser.Point(this.movePos.x, this.movePos.y);
+  var shoulderPos = new Phaser.Point(this.shoulderPos.x, this.shoulderPos.y);
+  shoulderPos = shoulderPos.add(this.player.x, this.player.y);
   var target = movePos
     .multiply(this.armLength, this.armLength)
-    .add(this.shoulderPos.x, this.shoulderPos.y);
+    .add(shoulderPos.x, shoulderPos.y);
   var d = target.subtract(this.x, this.y);
   // Deadzone
   if (d.getMagnitude() < DEADZONE) {
@@ -78,11 +81,11 @@ Fist.prototype.update = function() {
   }
   // Don't let fists exceed arm length
   var armPos = new Phaser.Point(this.x, this.y)
-    .subtract(this.shoulderPos.x, this.shoulderPos.y);
+    .subtract(shoulderPos.x, shoulderPos.y);
   if (armPos.getMagnitude() > this.armLength) {
     armPos = armPos.setMagnitude(this.armLength);
-    this.body.x = this.shoulderPos.x + armPos.x;
-    this.body.y = this.shoulderPos.y + armPos.y;
+    this.body.x = shoulderPos.x + armPos.x;
+    this.body.y = shoulderPos.y + armPos.y;
   }
 
   // Keep rotation the same as arm
