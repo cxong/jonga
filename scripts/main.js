@@ -73,10 +73,20 @@ GameState.prototype.create = function() {
 
   this.music = this.game.add.audio('taiko-drums');
 
-  this.title = this.game.add.sprite(
+  var title = this.game.add.sprite(
     GAME_WIDTH / 2, GAME_HEIGHT / 2, 'title');
-  this.title.anchor.setTo(0.5);
-  this.groups.title.add(this.title);
+  title.anchor.setTo(0.5);
+  this.groups.title.add(title);
+
+  var playerControls = this.game.add.sprite(
+    GAME_WIDTH * 0.25, GAME_HEIGHT * 0.2, 'keyboard');
+  playerControls.anchor.setTo(0.5);
+  this.groups.title.add(playerControls);
+
+  var enemyControls = this.game.add.sprite(
+    GAME_WIDTH * 0.75, GAME_HEIGHT * 0.2, 'robot');
+  enemyControls.anchor.setTo(0.5);
+  this.groups.title.add(enemyControls);
 
   this.stop();
 };
@@ -84,7 +94,9 @@ GameState.prototype.create = function() {
 GameState.prototype.start = function() {
   this.groups.dummy.removeAll(true);
 
-  this.title.alpha = 0;
+  this.groups.title.forEach(function(s) {
+    s.alpha = 0;
+  });
   if (this.music.paused) {
     this.music.resume();
   } else {
@@ -117,7 +129,9 @@ GameState.prototype.stop = function() {
   this.music.pause();
   this.sounds.drums.play();
 
-  this.title.alpha = 1;
+  this.groups.title.forEach(function(s) {
+    s.alpha = 1;
+  });
 
   this.started = false;
   this.dummyHits = 0;
