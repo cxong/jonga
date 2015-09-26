@@ -76,7 +76,7 @@ Fist.prototype.update = function() {
     //console.log(d.getMagnitude());
     if (v.getMagnitude() > WHOOSH_SPEED_THRESHOLD &&
       !this.whooshSound.isPlaying) {
-      this.whooshSound.play();
+      this.whooshSound.play('', 0, 0.3);
     }
   }
   // Don't let fists exceed arm length
@@ -86,6 +86,12 @@ Fist.prototype.update = function() {
     armPos = armPos.setMagnitude(this.armLength);
     this.body.x = shoulderPos.x + armPos.x;
     this.body.y = shoulderPos.y + armPos.y;
+  }
+  // Modify mass based on distance
+  if (armPos.getMagnitude() < 20) {
+    this.body.mass = 3;
+  } else {
+    this.body.mass = 60 / armPos.getMagnitude();
   }
 
   // Keep rotation the same as arm

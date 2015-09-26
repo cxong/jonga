@@ -5,6 +5,9 @@ var move = moveList.roundhousePunch();
 GameState.prototype.preload = function() {
 };
 
+var DUMMY_HITS_REQUIRED_TO_START = 3;
+var PLAYER_Y = GAME_HEIGHT / 2 + 25;
+
 GameState.prototype.create = function() {
   this.game.stage.backgroundColor = 0xffffff;
   this.game.physics.startSystem(Phaser.Physics.P2JS);
@@ -13,8 +16,6 @@ GameState.prototype.create = function() {
   this.game.physics.p2.setBoundsToWorld();
   this.game.physics.p2.setImpactEvents(true);
   this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-
-  this.game.time.slowMotion = 2.0;
 
   this.sounds = {
     parry: this.game.add.sound('parry'),
@@ -38,29 +39,6 @@ GameState.prototype.create = function() {
   var bg = this.game.add.sprite(0, 0, 'bg');
   bg.scale.setTo(PLAYER_SCALE);
   this.groups.bg.add(bg);
-
-  var y = GAME_HEIGHT / 2 + 25;
-  this.player = new Player(
-    this.game,
-    this.groups.bodies, this.collisionGroups.players,
-    this.groups.armsBack, this.groups.armsFront,
-    [this.collisionGroups.enemies], this.parry, this,
-    GAME_WIDTH / 2, y, 1);
-
-  this.enemy = new Player(
-    this.game,
-    this.groups.bodies, this.collisionGroups.enemies,
-    this.groups.armsBack, this.groups.armsFront,
-    [this.collisionGroups.players], this.parry, this,
-    GAME_WIDTH / 2 + 80, y, -1);
-
-  this.dummy = new Dummy(
-    this.game, this.groups.dummy, this.collisionGroups.enemies,
-    [this.collisionGroups.players], GAME_WIDTH * 0.3, y + 3);
-
-  this.game.input.onDown.add(function() {
-    this.tryStart();
-  }, this);
 
   this.game.input.keyboard.addKey(Phaser.Keyboard.F).onDown.add(function(key) {
     if (this.game.scale.isFullScreen) {
@@ -99,21 +77,31 @@ GameState.prototype.create = function() {
   this.title.anchor.setTo(0.5);
   this.groups.title.add(this.title);
 
-  this.started = false;
-
-  this.readyTime = this.game.time.now + 1000;
+  this.stop();
 };
 
 GameState.prototype.start = function() {
   this.groups.dummy.removeAll(true);
 
-  this.timeLast = this.game.time.now;
-  this.timeLastHalf = this.timeLast;
-
   this.title.alpha = 0;
   this.music.play('', 0, 1, true);
 
   this.started = true;
+
+  // Place players on opposite ends
+  this.player.die();
+  this.player = new Player(
+    this.game,
+    this.groups.bodies, this.collisionGroups.players,
+    this.groups.armsBack, this.groups.armsFront,
+    [this.collisionGroups.enemies], this.parry, this,
+    80, PLAYER_Y, 1);
+  this.enemy = new Player(
+    this.game,
+    this.groups.bodies, this.collisionGroups.enemies,
+    this.groups.armsBack, this.groups.armsFront,
+    [this.collisionGroups.players], this.parry, this,
+    GAME_WIDTH - 80, PLAYER_Y, -1);
 };
 
 GameState.prototype.stop = function() {
@@ -122,16 +110,27 @@ GameState.prototype.stop = function() {
   this.title.alpha = 1;
 
   this.started = false;
+  this.dummyHits = 0;
 
-  this.readyTime = this.game.time.now + 1000;
-};
+  this.game.time.slowMotion = 1.0;
 
-GameState.prototype.tryStart = function() {
-  if (!this.started) {
-    if (this.readyTime < this.game.time.now) {
-      this.start();
-    }
+  if (this.player) {
+    this.player.die();
   }
+  this.player = new Player(
+    this.game,
+    this.groups.bodies, this.collisionGroups.players,
+    this.groups.armsBack, this.groups.armsFront,
+    [this.collisionGroups.enemies], this.parry, this,
+    GAME_WIDTH / 2, PLAYER_Y, 1);
+  if (this.enemy) {
+    this.enemy.die();
+  }
+  this.enemy = null;
+
+  this.dummy = new Dummy(
+    this.game, this.groups.dummy, this.collisionGroups.enemies,
+    [this.collisionGroups.players], GAME_WIDTH * 0.3, PLAYER_Y + 3);
 };
 
 GameState.prototype.update = function() {
@@ -183,19 +182,22 @@ GameState.prototype.update = function() {
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
 
-  move.update();
-  if (move.isDone()) {
-    this.enemy.leftFist.move(0, 0.3);
-    this.enemy.rightFist.move(0, 0.3);
-    move = randomMove();
-  }
-  move.apply(this.enemy.leftFist, this.enemy.rightFist);
+  // Random kung fu moves for enemy
+  if (this.enemy) {
+    move.update();
+    if (move.isDone()) {
+      this.enemy.leftFist.move(0, 0.3);
+      this.enemy.rightFist.move(0, 0.3);
+      move = randomMove();
+    }
+    move.apply(this.enemy.leftFist, this.enemy.rightFist);
 
-  // Players move towards each other as long as they are far enough
-  var distance = Math.abs(this.player.body.x - this.enemy.body.x);
-  if (distance > 40*PLAYER_SCALE) {
-    this.player.approach();
-    this.enemy.approach();
+    // Players move towards each other as long as they are far enough
+    var distance = Math.abs(this.player.body.x - this.enemy.body.x);
+    if (distance > 40*PLAYER_SCALE) {
+      this.player.approach();
+      this.enemy.approach();
+    }
   }
 
   this.game.stage.filters[1].update();
@@ -204,16 +206,23 @@ GameState.prototype.update = function() {
 var IMPACT_SOUND_THRESHOLD = 190 * PLAYER_SCALE;
 
 GameState.prototype.parry = function(b1, b2) {
+  if (!b1.sprite || !b2.sprite) {
+    return;
+  }
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
   var v2 = new Phaser.Point(b2.velocity.x, b2.velocity.y);
-  var impactForce = v1.getMagnitude() * b1.mass + v2.getMagnitude() * b2.mass;
+  var impactForce = v1.getMagnitude() + v2.getMagnitude();
   if (impactForce > IMPACT_SOUND_THRESHOLD) {
     if (b2.sprite.key == 'dummy_arm_upper' ||
       b2.sprite.key == 'dummy_arm_lower') {
-      this.sounds.wood.play();
+      this.sounds.wood.play('', 0, 0.3);
+      this.dummyHits++;
+      if (this.dummyHits >= DUMMY_HITS_REQUIRED_TO_START) {
+        this.start();
+      }
     } else if (b2.sprite.key == 'torso' ||
       b2.sprite.key == 'head') {
-      this.sounds.punch.play();
+      this.sounds.punch.play('', 0, 0.3);
       // Being punched pushes the player back
       if (b2.sprite == this.player.torso ||
         b2.sprite == this.player.head) {
@@ -222,7 +231,7 @@ GameState.prototype.parry = function(b1, b2) {
         this.enemy.impulse(impactForce);
       }
     } else {
-      this.sounds.parry.play();
+      this.sounds.parry.play('', 0, 0.3);
     }
   }
 }

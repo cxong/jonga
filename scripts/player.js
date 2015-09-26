@@ -16,6 +16,9 @@ var Player = function(
   this.body.static = true;
   group.add(this);
 
+  this.game = game;
+  this.constraints = [];
+
   this.torso = game.add.sprite(x - 2*xscale, y - 8, 'torso');
   game.physics.p2.enable(this.torso, false);
   this.torso.scale.setTo(PLAYER_SCALE);
@@ -34,9 +37,9 @@ var Player = function(
   this.head.scale.setTo(PLAYER_SCALE);
   this.head.body.setCircle(this.head.width / 2);
   this.head.scale.x *= xscale;
-  game.physics.p2.createRevoluteConstraint(
+  this.constraints.push(game.physics.p2.createRevoluteConstraint(
     this.torso, [3*xscale, -1.05*this.torso.height], this.head, [0, 0],
-    ARM_FORCE);
+    ARM_FORCE));
   this.head.body.setCollisionGroup(collisionGroup);
   this.head.body.collides(fistsCollidesWith, collideFunc, collideContext);
   this.head.body.fixedRotation = true;
@@ -54,24 +57,24 @@ var Player = function(
       game, layer,
       collisionGroup, fistsCollidesWith, collideFunc, collideContext,
       shoulder.x, shoulder.y, 'arm_upper');
-    game.physics.p2.createRevoluteConstraint(
+    player.constraints.push(game.physics.p2.createRevoluteConstraint(
       player.torso, [_sx, sy],
       upper, [-upper.width / 2 + upper.height / 2, 0],
-      ARM_FORCE);
+      ARM_FORCE));
     var lower = new Arm(
       game, layer,
       collisionGroup, fistsCollidesWith, collideFunc, collideContext,
       shoulder.x, shoulder.y, 'arm_lower');
-    game.physics.p2.createRevoluteConstraint(
-      upper, [upper.width / 2, 0], lower, [-lower.width*0.4, 0], ARM_FORCE);
+    player.constraints.push(game.physics.p2.createRevoluteConstraint(
+      upper, [upper.width / 2, 0], lower, [-lower.width*0.4, 0], ARM_FORCE));
     var fist = new Fist(
       game, layer,
       collisionGroup, fistsCollidesWith, collideFunc, collideContext,
       shoulder.x - player.x, shoulder.y - player.y, player,
       'fist', frame,
       PLAYER_ARM_LENGTH, lower, PLAYER_FIST_SPEED);
-    game.physics.p2.createRevoluteConstraint(
-      lower, [lower.width / 2 + fist.width / 3, 0], fist, [0, 0], ARM_FORCE);
+    player.constraints.push(game.physics.p2.createRevoluteConstraint(
+      lower, [lower.width / 2 + fist.width / 3, 0], fist, [0, 0], ARM_FORCE));
     return [upper, lower, fist];
   };
   var right = addArm(this, fists_back, rightShoulder, sx, 1);
@@ -115,4 +118,19 @@ Player.prototype.approach = function() {
   this.body.x += dx;
   this.torso.body.x += dx;
   this.head.body.x += dx;
+};
+
+Player.prototype.die = function() {
+  for (var i = 0; i < this.constraints.length; i++) {
+    this.game.physics.p2.removeConstraint(this.constraints[i]);
+  }
+  this.rightFist.kill();
+  this.rightArmLower.kill();
+  this.rightArmUpper.kill();
+  this.leftFist.kill();
+  this.leftArmLower.kill();
+  this.leftArmUpper.kill();
+  this.head.kill();
+  this.torso.kill();
+  this.kill();
 };
