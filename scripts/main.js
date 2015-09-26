@@ -101,13 +101,13 @@ GameState.prototype.start = function() {
     this.groups.bodies, this.collisionGroups.players,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.enemies], this.parry, this,
-    80, PLAYER_Y, 1);
+    80, PLAYER_Y, 'player', 1);
   this.enemy = new Player(
     this.game,
     this.groups.bodies, this.collisionGroups.enemies,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.players], this.parry, this,
-    GAME_WIDTH - 80, PLAYER_Y, -1);
+    GAME_WIDTH - 80, PLAYER_Y, 'enemy', -1);
 };
 
 GameState.prototype.stop = function() {
@@ -129,7 +129,7 @@ GameState.prototype.stop = function() {
     this.groups.bodies, this.collisionGroups.players,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.enemies], this.parry, this,
-    GAME_WIDTH / 2, PLAYER_Y, 1);
+    GAME_WIDTH / 2, PLAYER_Y, 'player', 1);
   if (this.enemy) {
     this.enemy.die();
   }

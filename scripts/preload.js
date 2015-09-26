@@ -18,6 +18,7 @@ BasicGame.Preload.prototype = {
 
       this.game.load.image('title', 'images/title.png');
       this.game.load.image('bg', 'images/bg.png');
+      this.game.load.image('enemy', 'images/enemy.png');
       this.game.load.image('player', 'images/player.png');
       this.game.load.image('torso', 'images/torso.png');
       this.game.load.image('head', 'images/head.png');

@@ -6,8 +6,8 @@ var TORSO_ROTATE_SPEED = 0.06;
 var Player = function(
   game, group, collisionGroup,
   fists_back, fists, fistsCollidesWith, collideFunc, collideContext,
-  x, y, xscale) {
-  Phaser.Sprite.call(this, game, x, y, 'player');
+  x, y, sprite, xscale) {
+  Phaser.Sprite.call(this, game, x, y, sprite);
   this.anchor.setTo(0.5);
   // TODO: player body
   game.physics.p2.enable(this, false);
