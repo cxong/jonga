@@ -102,6 +102,9 @@ GameState.prototype.start = function() {
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.enemies], this.parry, this,
     80, PLAYER_Y, 'player', 1);
+  if (this.enemy) {
+    this.enemy.die();
+  }
   this.enemy = new Player(
     this.game,
     this.groups.bodies, this.collisionGroups.enemies,
@@ -129,15 +132,20 @@ GameState.prototype.stop = function() {
     this.groups.bodies, this.collisionGroups.players,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.enemies], this.parry, this,
-    GAME_WIDTH / 2, PLAYER_Y, 'player', 1);
+    GAME_WIDTH * 0.25, PLAYER_Y, 'player', 1);
   if (this.enemy) {
     this.enemy.die();
   }
-  this.enemy = null;
+  this.enemy = new Player(
+    this.game,
+    this.groups.bodies, this.collisionGroups.enemies,
+    this.groups.armsBack, this.groups.armsFront,
+    [this.collisionGroups.players], this.parry, this,
+    GAME_WIDTH * 0.75, PLAYER_Y, 'enemy', -1);
 
   this.dummy = new Dummy(
     this.game, this.groups.dummy, this.collisionGroups.enemies,
-    [this.collisionGroups.players], GAME_WIDTH * 0.3, PLAYER_Y + 3);
+    [this.collisionGroups.players], GAME_WIDTH / 2, PLAYER_Y + 3);
 };
 
 GameState.prototype.update = function() {
@@ -198,7 +206,8 @@ GameState.prototype.update = function() {
       move = randomMove();
     }
     move.apply(this.enemy.leftFist, this.enemy.rightFist);
-
+  }
+  if (this.started) {
     // Players move towards each other as long as they are far enough
     var distance = Math.abs(this.player.body.x - this.enemy.body.x);
     if (distance > 40*PLAYER_SCALE) {
