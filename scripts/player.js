@@ -48,8 +48,8 @@ var Player = function(
   // Shoulder positions
   var sx = 0.2*this.torso.width;
   var sy = -0.7*this.torso.height;
-  var leftShoulder = new Phaser.Point(this.torso.x - sx, this.torso.y + sy);
-  var rightShoulder = new Phaser.Point(this.torso.x + sx, this.torso.y + sy);
+  var leftShoulder = new Phaser.Point(this.torso.x + sx, this.torso.y + sy);
+  var rightShoulder = new Phaser.Point(this.torso.x - sx, this.torso.y + sy);
 
   // Add some arms and fists
   var addArm = function(player, layer, shoulder, _sx, frame) {
@@ -77,17 +77,39 @@ var Player = function(
       lower, [lower.width / 2 + fist.width / 3, 0], fist, [0, 0], ARM_FORCE));
     return [upper, lower, fist];
   };
-  var right = addArm(this, fists_back, rightShoulder, sx, 1);
+  var left = addArm(this, fists_back, rightShoulder, sx, 1);
+  var right = addArm(this, fists, leftShoulder, -sx, 0);
   this.rightArmUpper = right[0];
   this.rightArmLower = right[1];
   this.rightFist = right[2];
-  var left = addArm(this, fists, leftShoulder, -sx, 0);
   this.leftArmUpper = left[0];
   this.leftArmLower = left[1];
   this.leftFist = left[2];
 };
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
+
+Player.prototype.equip = function(
+  sprite, group, collisionGroup, fistsCollidesWith,
+  collideFunc, collideContext, isLeft) {
+  if (isLeft) {
+    this.leftWeapon = new FixedWeapon(
+      this.game, group,
+      collisionGroup, fistsCollidesWith, collideFunc, collideContext,
+      this.leftFist, this.leftFist.x, this.leftFist.y, sprite);
+    this.constraints.push(this.game.physics.p2.createRevoluteConstraint(
+      this.leftFist, [0, 0], this.leftWeapon, [0, 0],
+      ARM_FORCE));
+  } else {
+    this.rightWeapon = new FixedWeapon(
+      this.game, group,
+      collisionGroup, fistsCollidesWith, collideFunc, collideContext,
+      this.rightFist, this.rightFist.x, this.rightFist.y, sprite);
+    this.constraints.push(this.game.physics.p2.createRevoluteConstraint(
+      this.rightFist, [0, 0], this.rightWeapon, [0, 0],
+      ARM_FORCE));
+  }
+};
 
 Player.prototype.update = function() {
   // Update torso rotation based on the two fists' move pos
@@ -123,6 +145,12 @@ Player.prototype.approach = function() {
 Player.prototype.die = function() {
   for (var i = 0; i < this.constraints.length; i++) {
     this.game.physics.p2.removeConstraint(this.constraints[i]);
+  }
+  if (this.leftWeapon) {
+    this.leftWeapon.destroy();
+  }
+  if (this.rightWeapon) {
+    this.rightWeapon.destroy();
   }
   this.rightFist.destroy();
   this.rightArmLower.destroy();

@@ -49,6 +49,28 @@ GameState.prototype.create = function() {
     }
   }, this);
 
+  this.game.input.keyboard.addKey(Phaser.Keyboard.Q).onDown.add(function(key) {
+    if (this.game.started) {
+      return;
+    }
+    this.player.equip(
+      'shield', this.groups.armsBack, this.collisionGroups.players,
+      [this.collisionGroups.enemies],
+      this.parry, this, true);
+    this.player.equip(
+      'sword', this.groups.armsFront, this.collisionGroups.players,
+      [this.collisionGroups.enemies],
+      this.parry, this, false);
+    this.enemy.equip(
+      'sword', this.groups.armsBack, this.collisionGroups.enemies,
+      [this.collisionGroups.players],
+      this.parry, this, true);
+    this.enemy.equip(
+      'shield', this.groups.armsFront, this.collisionGroups.enemies,
+      [this.collisionGroups.players],
+      this.parry, this, false);
+  }, this);
+
   var filterVignette = this.game.add.filter('Vignette');
   filterVignette.size = 0.3;
   filterVignette.amount = 0.5;
@@ -164,50 +186,50 @@ GameState.prototype.stop = function() {
 
 GameState.prototype.update = function() {
   // Punch using keyboard
-  // WSAD = left arm
-  // cursors = right arm
+  // WSAD = right arm
+  // cursors = left arm
   var leftMoved = false;
   var leftMove = {x:0, y:0};
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
     leftMove.x = -1;
     leftMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
     leftMove.x = 1;
     leftMoved = true;
   }
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
     leftMove.y = -1;
     leftMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
     leftMove.y = 1;
     leftMoved = true;
   }
   // Default pose position
   if (!leftMoved) {
-    leftMove.x = 0;
-    leftMove.y = -0.4;
+    leftMove.x = 0.3;
+    leftMove.y = 0.2;
   }
   this.player.leftFist.move(leftMove.x, leftMove.y);
   var rightMoved = false;
   var rightMove = {x:0, y:0};
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
     rightMove.x = -1;
     rightMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
     rightMove.x = 1;
     rightMoved = true;
   }
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
     rightMove.y = -1;
     rightMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
     rightMove.y = 1;
     rightMoved = true;
   }
   // Default pose position
   if (!rightMoved) {
-    rightMove.x = 0.3;
-    rightMove.y = 0.2;
+    rightMove.x = 0;
+    rightMove.y = -0.4;
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
 
@@ -224,8 +246,20 @@ GameState.prototype.update = function() {
   if (this.started) {
     // Players move towards each other as long as they are far enough
     var distance = Math.abs(this.player.body.x - this.enemy.body.x);
-    if (distance > 40*PLAYER_SCALE) {
+
+    var playerDistance = 40*PLAYER_SCALE;
+    if (this.player.rightWeapon) {
+      playerDistance += this.player.rightWeapon.width * 0.6;
+    }
+    if (distance > playerDistance) {
       this.player.approach();
+    }
+
+    var enemyDistance = 40*PLAYER_SCALE;
+    if (this.enemy.leftWeapon) {
+      enemyDistance += this.enemy.leftWeapon.width * 0.6;
+    }
+    if (distance > enemyDistance) {
       this.enemy.approach();
     }
 
@@ -247,7 +281,7 @@ GameState.prototype.parry = function(b1, b2) {
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
   var v2 = new Phaser.Point(b2.velocity.x, b2.velocity.y);
   var impactForce = v1.getMagnitude() + v2.getMagnitude();
-  if (impactForce > IMPACT_SOUND_THRESHOLD) {
+  if (impactForce > IMPACT_SOUND_THRESHOLD || b1.sprite.key == 'sword') {
     if (b2.sprite.key == 'dummy_arm_upper' ||
       b2.sprite.key == 'dummy_arm_lower') {
       this.sounds.wood.play('', 0, 0.3);
