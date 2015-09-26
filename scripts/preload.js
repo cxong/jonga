@@ -28,6 +28,7 @@ BasicGame.Preload.prototype = {
       this.game.load.image('dummy_arm_lower', 'images/dummy_arm_lower.png');
       this.game.load.spritesheet('fist', 'images/fist.png', 9, 9);
 
+      this.game.load.audio('drums', 'sounds/drums.ogg');
       this.game.load.audio('parry', 'sounds/parry.ogg');
       this.game.load.audio('punch', 'sounds/punch.ogg');
       this.game.load.audio('wood', 'sounds/wood.ogg');

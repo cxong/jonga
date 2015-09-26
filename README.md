@@ -18,6 +18,7 @@ Jonga is open source and made for [Mini LD 62](insert link here)
 - Logo by <a href="http://cooltext.com" target="_top"><img src="http://cooltext.com/images/ct_pixel.gif" width="80" height="15" alt="Cool Text: Logo and Graphics Generator" border="0" /></a>
 - Dummy derived from [Home Objects by Jannax](http://opengameart.org/content/home-objects) [![](https://licensebuttons.net/p/zero/1.0/80x15.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 - Sounds:
+  - drums derived from [Drum (Taiko) by toaru_otoya](https://freesound.org/people/toaru_otoya/sounds/204111/) [![](https://licensebuttons.net/p/zero/1.0/80x15.png)](https://creativecommons.org/publicdomain/zero/1.0/)
   - parry derived from [Weapons & Fighting » Fist Punch 3.mp3 by CGEffex](https://freesound.org/people/CGEffex/sounds/89769/) [![](https://licensebuttons.net/l/by/3.0/80x15.png)](https://creativecommons.org/licenses/by/3.0/)
   - punch deriveed from [punch.wav by Ekokubza123](https://freesound.org/people/Ekokubza123/sounds/104183/) [![](https://licensebuttons.net/p/zero/1.0/80x15.png)](https://creativecommons.org/publicdomain/zero/1.0/)
   - whoosh derived from [heavy cloth rustle.wav by jacobzeier](https://freesound.org/people/jacobzeier/sounds/163164/) [![](https://licensebuttons.net/p/zero/1.0/80x15.png)](https://creativecommons.org/publicdomain/zero/1.0/)

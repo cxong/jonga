@@ -102,7 +102,7 @@ Player.prototype.update = function() {
   }
 };
 
-var IMPACT_PUSHBACK_FACTOR = 0.03;
+var IMPACT_PUSHBACK_FACTOR = 0.02;
 
 Player.prototype.impulse = function(x) {
   var dx = -this.scale.x * x * IMPACT_PUSHBACK_FACTOR;
@@ -124,13 +124,13 @@ Player.prototype.die = function() {
   for (var i = 0; i < this.constraints.length; i++) {
     this.game.physics.p2.removeConstraint(this.constraints[i]);
   }
-  this.rightFist.kill();
-  this.rightArmLower.kill();
-  this.rightArmUpper.kill();
-  this.leftFist.kill();
-  this.leftArmLower.kill();
-  this.leftArmUpper.kill();
-  this.head.kill();
-  this.torso.kill();
-  this.kill();
+  this.rightFist.destroy();
+  this.rightArmLower.destroy();
+  this.rightArmUpper.destroy();
+  this.leftFist.destroy();
+  this.leftArmLower.destroy();
+  this.leftArmUpper.destroy();
+  this.head.destroy();
+  this.torso.destroy();
+  this.destroy();
 };

@@ -18,6 +18,7 @@ GameState.prototype.create = function() {
   this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
   this.sounds = {
+    drums: this.game.add.sound('drums'),
     parry: this.game.add.sound('parry'),
     punch: this.game.add.sound('punch'),
     wood: this.game.add.sound('wood'),
@@ -84,7 +85,12 @@ GameState.prototype.start = function() {
   this.groups.dummy.removeAll(true);
 
   this.title.alpha = 0;
-  this.music.play('', 0, 1, true);
+  if (this.music.paused) {
+    this.music.resume();
+  } else {
+    this.music.play('', 0, 1, true);
+  }
+  this.sounds.drums.play();
 
   this.started = true;
 
@@ -105,7 +111,8 @@ GameState.prototype.start = function() {
 };
 
 GameState.prototype.stop = function() {
-  this.music.stop();
+  this.music.pause();
+  this.sounds.drums.play();
 
   this.title.alpha = 1;
 
@@ -197,6 +204,11 @@ GameState.prototype.update = function() {
     if (distance > 40*PLAYER_SCALE) {
       this.player.approach();
       this.enemy.approach();
+    }
+
+    // If any player is off the edge, stop the game
+    if (this.player.x < 0 || this.enemy.x > GAME_WIDTH) {
+      this.stop();
     }
   }
 
