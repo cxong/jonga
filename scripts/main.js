@@ -11,7 +11,6 @@ var PLAYER_Y = GAME_HEIGHT / 2 + 25;
 GameState.prototype.create = function() {
   this.game.stage.backgroundColor = 0xffffff;
   this.game.physics.startSystem(Phaser.Physics.P2JS);
-	//this.game.physics.p2.gravity.y = GRAVITY;
   this.game.physics.p2.restitution = 1.0;
   this.game.physics.p2.setBoundsToWorld();
   this.game.physics.p2.setImpactEvents(true);
@@ -53,52 +52,19 @@ GameState.prototype.create = function() {
     }
   }, this);
 
+  this.gameMode = 1;
+
   this.game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(function(key) {
-    if (this.game.started) {
-      return;
-    }
-    this.player.equip(null, null, null, null, null, null, true);
-    this.player.equip(null, null, null, null, null, null, false);
-    this.player.rightFist.whooshSound = this.sounds.whoosh;
-    this.enemy.equip(null, null, null, null, null, null, true);
-    this.enemy.equip(null, null, null, null, null, null, false);
-    this.enemy.leftFist.whooshSound = this.sounds.whoosh;
+    this.gameMode = 1;
+    this.setGameMode();
   }, this);
   this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(function(key) {
-    if (this.game.started) {
-      return;
-    }
-    this.player.equip(
-      'shield', this.groups.armsBack, this.collisionGroups.players,
-      [this.collisionGroups.enemies],
-      this.parry, this, true);
-    this.player.equip(
-      'sword', this.groups.armsFront, this.collisionGroups.players,
-      [this.collisionGroups.enemies],
-      this.parry, this, false);
-    this.player.rightFist.whooshSound = this.sounds.swish;
-    this.enemy.equip(
-      'sword', this.groups.armsBack, this.collisionGroups.enemies,
-      [this.collisionGroups.players],
-      this.parry, this, true);
-    this.enemy.equip(
-      'shield', this.groups.armsFront, this.collisionGroups.enemies,
-      [this.collisionGroups.players],
-      this.parry, this, false);
-    this.enemy.leftFist.whooshSound = this.sounds.swish;
+    this.gameMode = 2;
+    this.setGameMode();
   }, this);
   this.game.input.keyboard.addKey(Phaser.Keyboard.THREE).onDown.add(function(key) {
-    if (this.game.started) {
-      return;
-    }
-    this.player.equip2H(
-      'spear', this.groups.armsBack, this.collisionGroups.players,
-      [this.collisionGroups.enemies], this.parry, this);
-    this.player.rightFist.whooshSound = this.sounds.whoosh;
-    this.enemy.equip2H(
-      'spear', this.groups.armsBack, this.collisionGroups.enemies,
-      [this.collisionGroups.players], this.parry, this);
-    this.enemy.leftFist.whooshSound = this.sounds.whoosh;
+    this.gameMode = 3;
+    this.setGameMode();
   }, this);
 
   var filterVignette = this.game.add.filter('Vignette');
@@ -127,6 +93,11 @@ GameState.prototype.create = function() {
     GAME_WIDTH * 0.75, GAME_HEIGHT * 0.2, 'robot');
   enemyControls.anchor.setTo(0.5);
   this.groups.title.add(enemyControls);
+
+  var switchPrompt = this.game.add.sprite(
+    GAME_WIDTH / 2, GAME_HEIGHT * 0.1, 'switch_prompt');
+  switchPrompt.anchor.setTo(0.5);
+  this.groups.title.add(switchPrompt);
 
   this.stop();
 };
@@ -163,6 +134,7 @@ GameState.prototype.start = function() {
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.players], this.parry, this,
     GAME_WIDTH - 80, PLAYER_Y, 'enemy', -1, this.sounds.whoosh);
+  this.setGameMode();
 };
 
 GameState.prototype.stop = function() {
@@ -196,10 +168,58 @@ GameState.prototype.stop = function() {
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.players], this.parry, this,
     GAME_WIDTH * 0.75, PLAYER_Y, 'enemy', -1, this.sounds.whoosh);
+  this.gameMode = 1;
+  this.setGameMode();
 
   this.dummy = new Dummy(
     this.game, this.groups.dummy, this.collisionGroups.enemies,
     [this.collisionGroups.players], GAME_WIDTH / 2, PLAYER_Y + 3);
+};
+
+GameState.prototype.setGameMode = function() {
+  if (this.game.started) {
+    return;
+  }
+  switch (this.gameMode) {
+    case 1:
+      this.player.equip(null, null, null, null, null, null, true);
+      this.player.equip(null, null, null, null, null, null, false);
+      this.player.rightFist.whooshSound = this.sounds.whoosh;
+      this.enemy.equip(null, null, null, null, null, null, true);
+      this.enemy.equip(null, null, null, null, null, null, false);
+      this.enemy.leftFist.whooshSound = this.sounds.whoosh;
+      break;
+    case 2:
+      this.player.equip(
+        'shield', this.groups.armsBack, this.collisionGroups.players,
+        [this.collisionGroups.enemies],
+        this.parry, this, true);
+      this.player.equip(
+        'sword', this.groups.armsFront, this.collisionGroups.players,
+        [this.collisionGroups.enemies],
+        this.parry, this, false);
+      this.player.rightFist.whooshSound = this.sounds.swish;
+      this.enemy.equip(
+        'sword', this.groups.armsBack, this.collisionGroups.enemies,
+        [this.collisionGroups.players],
+        this.parry, this, true);
+      this.enemy.equip(
+        'shield', this.groups.armsFront, this.collisionGroups.enemies,
+        [this.collisionGroups.players],
+        this.parry, this, false);
+      this.enemy.leftFist.whooshSound = this.sounds.swish;
+      break;
+    case 3:
+      this.player.equip2H(
+        'spear', this.groups.armsBack, this.collisionGroups.players,
+        [this.collisionGroups.enemies], this.parry, this);
+      this.player.rightFist.whooshSound = this.sounds.whoosh;
+      this.enemy.equip2H(
+        'spear', this.groups.armsBack, this.collisionGroups.enemies,
+        [this.collisionGroups.players], this.parry, this);
+      this.enemy.leftFist.whooshSound = this.sounds.whoosh;
+      break;
+  }
 };
 
 GameState.prototype.update = function() {
@@ -265,27 +285,19 @@ GameState.prototype.update = function() {
     // Players move towards each other as long as they are far enough
     var distance = Math.abs(this.player.body.x - this.enemy.body.x);
 
-    var playerDistance = 40*PLAYER_SCALE;
-    var playerWeapon = 0;
-    if (this.player.leftWeapon) {
-      playerWeapon = Math.max(this.player.leftWeapon.width * 0.5, playerWeapon);
+    var d = 40;
+    switch (this.gameMode) {
+      case 1:
+        break;
+      case 2:
+        d += 20;
+        break;
+      case 3:
+        d += 40;
+        break;
     }
-    if (this.player.rightWeapon) {
-      playerWeapon = Math.max(this.player.rightWeapon.width * 0.5, playerWeapon);
-    }
-    if (distance > playerDistance + playerWeapon) {
+    if (distance > d*PLAYER_SCALE) {
       this.player.approach();
-    }
-
-    var enemyDistance = 40*PLAYER_SCALE;
-    var enemyWeapon = 0;
-    if (this.player.leftWeapon) {
-      enemyWeapon = Math.max(this.enemy.leftWeapon.width * 0.5, enemyWeapon);
-    }
-    if (this.player.rightWeapon) {
-      enemyWeapon = Math.max(this.enemy.rightWeapon.width * 0.5, enemyWeapon);
-    }
-    if (distance > enemyDistance + enemyWeapon) {
       this.enemy.approach();
     }
 
