@@ -4,7 +4,7 @@ var FixedWeapon = function(
   Phaser.Sprite.call(this, game, x, y, sprite);
   game.physics.p2.enable(this, false);
   this.scale.setTo(PLAYER_SCALE);
-  this.body.setRectangle(this.width, this.height);
+  this.body.setRectangle(this.width, this.height, this.width / 2 - fist.width / 2, 0);
   this.body.setCollisionGroup(collisionGroup);
   this.body.collides(collidesWith, collideFunc, collideContext);
   this.body.mass = 1;
@@ -26,4 +26,5 @@ FixedWeapon.prototype.update = function() {
   while (this.rotation < 0) {
     this.rotation += Math.PI*2;
   }
+  this.body.rotation = this.rotation;
 };

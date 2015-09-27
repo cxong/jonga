@@ -4,7 +4,7 @@ var HandedWeapon = function(
   Phaser.Sprite.call(this, game, x, y, sprite);
   game.physics.p2.enable(this, false);
   this.scale.setTo(PLAYER_SCALE);
-  this.body.setRectangle(this.width, this.height);
+  this.body.setRectangle(this.width, this.height / 3);
   this.body.setCollisionGroup(collisionGroup);
   this.body.collides(collidesWith, collideFunc, collideContext);
   this.body.mass = 2;
