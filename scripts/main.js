@@ -40,6 +40,11 @@ GameState.prototype.create = function() {
     players: this.game.physics.p2.createCollisionGroup()
   };
 
+  this.game.input.keyboard.addKeyCapture(Phaser.Keyboard.UP);
+  this.game.input.keyboard.addKeyCapture(Phaser.Keyboard.DOWN);
+  this.game.input.keyboard.addKeyCapture(Phaser.Keyboard.LEFT);
+  this.game.input.keyboard.addKeyCapture(Phaser.Keyboard.RIGHT);
+
   var bg = this.game.add.sprite(0, 0, 'bg');
   bg.scale.setTo(PLAYER_SCALE);
   this.groups.bg.add(bg);
