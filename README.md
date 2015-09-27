@@ -2,13 +2,11 @@
 
 ![](logo.png)
 
-Physics based kung fu boss battle game!
+Physics based kung fu battle game!
 
-<!--
-Jonga is open source and made for [Mini LD 62](insert link here)
+Jonga is open source and made for [Mini LD 62](http://ludumdare.com/compo/minild-62/?action=preview&uid=33168)
 
-[Play online now](insert link here)
--->
+[Play online now](http://congusbongus.itch.io/jonga)
 
 ### Licenses
 
