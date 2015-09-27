@@ -214,8 +214,8 @@ GameState.prototype.update = function() {
   }
   // Default pose position
   if (!leftMoved) {
-    leftMove.x = 0.3;
-    leftMove.y = 0.2;
+    leftMove.x = 0.4;
+    leftMove.y = 0.1;
   }
   this.player.leftFist.move(leftMove.x, leftMove.y);
   var rightMoved = false;
@@ -236,8 +236,8 @@ GameState.prototype.update = function() {
   }
   // Default pose position
   if (!rightMoved) {
-    rightMove.x = 0;
-    rightMove.y = -0.4;
+    rightMove.x = -0.3;
+    rightMove.y = 0.2;
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
 
@@ -289,6 +289,7 @@ GameState.prototype.update = function() {
 };
 
 var IMPACT_SOUND_THRESHOLD = 190 * PLAYER_SCALE;
+var IMPACT_SOUND_WEAPON_THRESHOLD = 140 * PLAYER_SCALE;
 
 GameState.prototype.parry = function(b1, b2) {
   if (!b1.sprite || !b2.sprite) {
@@ -297,8 +298,9 @@ GameState.prototype.parry = function(b1, b2) {
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
   var v2 = new Phaser.Point(b2.velocity.x, b2.velocity.y);
   var impactForce = v1.getMagnitude() + v2.getMagnitude();
-  if (impactForce > IMPACT_SOUND_THRESHOLD || b1.sprite.key == 'sword'
-   || b1.sprite.key == 'spear') {
+  if (impactForce > IMPACT_SOUND_THRESHOLD ||
+    (impactForce > IMPACT_SOUND_WEAPON_THRESHOLD &&
+      (b1.sprite.key == 'sword' || b1.sprite.key == 'spear'))) {
     if (b2.sprite.key == 'dummy_arm_upper' ||
       b2.sprite.key == 'dummy_arm_lower') {
       this.sounds.wood.play('', 0, 0.3);
