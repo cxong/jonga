@@ -79,6 +79,17 @@ GameState.prototype.create = function() {
       [this.collisionGroups.players],
       this.parry, this, false);
   }, this);
+  this.game.input.keyboard.addKey(Phaser.Keyboard.THREE).onDown.add(function(key) {
+    if (this.game.started) {
+      return;
+    }
+    this.player.equip2H(
+      'spear', this.groups.armsBack, this.collisionGroups.players,
+      [this.collisionGroups.enemies], this.parry, this);
+    this.enemy.equip2H(
+      'spear', this.groups.armsBack, this.collisionGroups.enemies,
+      [this.collisionGroups.players], this.parry, this);
+  }, this);
 
   var filterVignette = this.game.add.filter('Vignette');
   filterVignette.size = 0.3;
@@ -89,18 +100,6 @@ GameState.prototype.create = function() {
   filterFilmGrain.amount = 0.1;
   filterFilmGrain.luminance = 0.12;
   this.game.stage.filters = [filterVignette, filterFilmGrain];
-/*
-  this.bigTextStyle = {
-    font: "36px Courier New, monospace",
-    fill: "#000",
-    fontWeight: "bold"
-  };
-  this.highStyle = {
-    font: "36px Courier New, monospace",
-    fill: "#f00",
-    fontWeight: "bold"
-  };
-  */
 
   this.music = this.game.add.audio('taiko-drums');
 
@@ -257,18 +256,26 @@ GameState.prototype.update = function() {
     var distance = Math.abs(this.player.body.x - this.enemy.body.x);
 
     var playerDistance = 40*PLAYER_SCALE;
-    if (this.player.rightWeapon) {
-      playerDistance += this.player.rightWeapon.width * 0.6;
+    var playerWeapon = 0;
+    if (this.player.leftWeapon) {
+      playerWeapon = Math.max(this.player.leftWeapon.width * 0.5, playerWeapon);
     }
-    if (distance > playerDistance) {
+    if (this.player.rightWeapon) {
+      playerWeapon = Math.max(this.player.rightWeapon.width * 0.5, playerWeapon);
+    }
+    if (distance > playerDistance + playerWeapon) {
       this.player.approach();
     }
 
     var enemyDistance = 40*PLAYER_SCALE;
-    if (this.enemy.leftWeapon) {
-      enemyDistance += this.enemy.leftWeapon.width * 0.6;
+    var enemyWeapon = 0;
+    if (this.player.leftWeapon) {
+      enemyWeapon = Math.max(this.enemy.leftWeapon.width * 0.5, enemyWeapon);
     }
-    if (distance > enemyDistance) {
+    if (this.player.rightWeapon) {
+      enemyWeapon = Math.max(this.enemy.rightWeapon.width * 0.5, enemyWeapon);
+    }
+    if (distance > enemyDistance + enemyWeapon) {
       this.enemy.approach();
     }
 
@@ -290,7 +297,8 @@ GameState.prototype.parry = function(b1, b2) {
   var v1 = new Phaser.Point(b1.velocity.x, b1.velocity.y);
   var v2 = new Phaser.Point(b2.velocity.x, b2.velocity.y);
   var impactForce = v1.getMagnitude() + v2.getMagnitude();
-  if (impactForce > IMPACT_SOUND_THRESHOLD || b1.sprite.key == 'sword') {
+  if (impactForce > IMPACT_SOUND_THRESHOLD || b1.sprite.key == 'sword'
+   || b1.sprite.key == 'spear') {
     if (b2.sprite.key == 'dummy_arm_upper' ||
       b2.sprite.key == 'dummy_arm_lower') {
       this.sounds.wood.play('', 0, 0.3);

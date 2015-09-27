@@ -31,6 +31,7 @@ BasicGame.Preload.prototype = {
       this.game.load.image('dummy_arm_lower', 'images/dummy_arm_lower.png');
       this.game.load.image('shield', 'images/shield.png');
       this.game.load.image('sword', 'images/sword.png');
+      this.game.load.image('spear', 'images/spear.png');
       this.game.load.spritesheet('fist', 'images/fist.png', 9, 9);
 
       this.game.load.audio('drums', 'sounds/drums.ogg');
