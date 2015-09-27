@@ -6,7 +6,7 @@ var TORSO_ROTATE_SPEED = 0.06;
 var Player = function(
   game, group, collisionGroup,
   fists_back, fists, fistsCollidesWith, collideFunc, collideContext,
-  x, y, sprite, xscale) {
+  x, y, sprite, xscale, whooshSound) {
   Phaser.Sprite.call(this, game, x, y, sprite);
   this.anchor.setTo(0.5);
   // TODO: player body
@@ -72,7 +72,7 @@ var Player = function(
       collisionGroup, fistsCollidesWith, collideFunc, collideContext,
       shoulder.x - player.x, shoulder.y - player.y, player,
       'fist', frame,
-      PLAYER_ARM_LENGTH, lower, PLAYER_FIST_SPEED);
+      PLAYER_ARM_LENGTH, lower, PLAYER_FIST_SPEED, whooshSound);
     player.constraints.push(game.physics.p2.createRevoluteConstraint(
       lower, [lower.width / 2 + fist.width / 3, 0], fist, [0, 0], ARM_FORCE));
     return [upper, lower, fist];

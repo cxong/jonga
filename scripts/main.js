@@ -22,6 +22,10 @@ GameState.prototype.create = function() {
     parry: this.game.add.sound('parry'),
     punch: this.game.add.sound('punch'),
     wood: this.game.add.sound('wood'),
+    clang: this.game.add.sound('clang'),
+    stab: this.game.add.sound('stab'),
+    whoosh: this.game.add.sound('whoosh'),
+    swish: this.game.add.sound('swish')
   };
 
   this.groups = {
@@ -55,8 +59,10 @@ GameState.prototype.create = function() {
     }
     this.player.equip(null, null, null, null, null, null, true);
     this.player.equip(null, null, null, null, null, null, false);
+    this.player.rightFist.whooshSound = this.sounds.whoosh;
     this.enemy.equip(null, null, null, null, null, null, true);
     this.enemy.equip(null, null, null, null, null, null, false);
+    this.enemy.leftFist.whooshSound = this.sounds.whoosh;
   }, this);
   this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(function(key) {
     if (this.game.started) {
@@ -70,6 +76,7 @@ GameState.prototype.create = function() {
       'sword', this.groups.armsFront, this.collisionGroups.players,
       [this.collisionGroups.enemies],
       this.parry, this, false);
+    this.player.rightFist.whooshSound = this.sounds.swish;
     this.enemy.equip(
       'sword', this.groups.armsBack, this.collisionGroups.enemies,
       [this.collisionGroups.players],
@@ -78,6 +85,7 @@ GameState.prototype.create = function() {
       'shield', this.groups.armsFront, this.collisionGroups.enemies,
       [this.collisionGroups.players],
       this.parry, this, false);
+    this.enemy.leftFist.whooshSound = this.sounds.swish;
   }, this);
   this.game.input.keyboard.addKey(Phaser.Keyboard.THREE).onDown.add(function(key) {
     if (this.game.started) {
@@ -86,9 +94,11 @@ GameState.prototype.create = function() {
     this.player.equip2H(
       'spear', this.groups.armsBack, this.collisionGroups.players,
       [this.collisionGroups.enemies], this.parry, this);
+    this.player.rightFist.whooshSound = this.sounds.whoosh;
     this.enemy.equip2H(
       'spear', this.groups.armsBack, this.collisionGroups.enemies,
       [this.collisionGroups.players], this.parry, this);
+    this.enemy.leftFist.whooshSound = this.sounds.whoosh;
   }, this);
 
   var filterVignette = this.game.add.filter('Vignette');
@@ -143,7 +153,7 @@ GameState.prototype.start = function() {
     this.groups.bodies, this.collisionGroups.players,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.enemies], this.parry, this,
-    80, PLAYER_Y, 'player', 1);
+    80, PLAYER_Y, 'player', 1, this.sounds.whoosh);
   if (this.enemy) {
     this.enemy.die();
   }
@@ -152,7 +162,7 @@ GameState.prototype.start = function() {
     this.groups.bodies, this.collisionGroups.enemies,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.players], this.parry, this,
-    GAME_WIDTH - 80, PLAYER_Y, 'enemy', -1);
+    GAME_WIDTH - 80, PLAYER_Y, 'enemy', -1, this.sounds.whoosh);
 };
 
 GameState.prototype.stop = function() {
@@ -176,7 +186,7 @@ GameState.prototype.stop = function() {
     this.groups.bodies, this.collisionGroups.players,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.enemies], this.parry, this,
-    GAME_WIDTH * 0.25, PLAYER_Y, 'player', 1);
+    GAME_WIDTH * 0.25, PLAYER_Y, 'player', 1, this.sounds.whoosh);
   if (this.enemy) {
     this.enemy.die();
   }
@@ -185,7 +195,7 @@ GameState.prototype.stop = function() {
     this.groups.bodies, this.collisionGroups.enemies,
     this.groups.armsBack, this.groups.armsFront,
     [this.collisionGroups.players], this.parry, this,
-    GAME_WIDTH * 0.75, PLAYER_Y, 'enemy', -1);
+    GAME_WIDTH * 0.75, PLAYER_Y, 'enemy', -1, this.sounds.whoosh);
 
   this.dummy = new Dummy(
     this.game, this.groups.dummy, this.collisionGroups.enemies,
@@ -318,6 +328,10 @@ GameState.prototype.parry = function(b1, b2) {
       } else {
         this.enemy.impulse(impactForce);
       }
+    } else if (b2.sprite.key == 'sword') {
+      this.sounds.clang.play('', 0, 0.3);
+    } else if (b2.sprite.key == 'spear') {
+      this.sounds.wood.play('', 0, 0.3);
     } else {
       this.sounds.parry.play('', 0, 0.3);
     }

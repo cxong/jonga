@@ -7,7 +7,7 @@ var Fist = function(
   game, group,
   collisionGroup, collidesWith, collideFunc, collideContext,
   shoulderX, shoulderY, player, sprite, frame,
-  armLength, arm, speed) {
+  armLength, arm, speed, whooshSound) {
   Phaser.Sprite.call(this, game, shoulderX, shoulderY, sprite);
   game.physics.p2.enable(this);
   this.scale.setTo(PLAYER_SCALE);
@@ -25,8 +25,7 @@ var Fist = function(
   this.player = player;
   this.arm = arm;
 
-  this.parrySound = game.add.sound('parry');
-  this.whooshSound = game.add.sound('whoosh');
+  this.whooshSound = whooshSound;
 
   // Choose fist frame based on angle
   this.frameD = frame;
