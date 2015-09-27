@@ -1,8 +1,7 @@
 # Jonga
 
-<!--
 ![](logo.png)
--->
+
 Physics based kung fu boss battle game!
 
 <!--

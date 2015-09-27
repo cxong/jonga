@@ -211,11 +211,11 @@ GameState.prototype.setGameMode = function() {
       break;
     case 3:
       this.player.equip2H(
-        'spear', this.groups.armsBack, this.collisionGroups.players,
+        'spear', this.groups.armsFront, this.collisionGroups.players,
         [this.collisionGroups.enemies], this.parry, this);
       this.player.rightFist.whooshSound = this.sounds.whoosh;
       this.enemy.equip2H(
-        'spear', this.groups.armsBack, this.collisionGroups.enemies,
+        'spear', this.groups.armsFront, this.collisionGroups.enemies,
         [this.collisionGroups.players], this.parry, this);
       this.enemy.leftFist.whooshSound = this.sounds.whoosh;
       break;
