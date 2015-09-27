@@ -49,7 +49,16 @@ GameState.prototype.create = function() {
     }
   }, this);
 
-  this.game.input.keyboard.addKey(Phaser.Keyboard.Q).onDown.add(function(key) {
+  this.game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(function(key) {
+    if (this.game.started) {
+      return;
+    }
+    this.player.equip(null, null, null, null, null, null, true);
+    this.player.equip(null, null, null, null, null, null, false);
+    this.enemy.equip(null, null, null, null, null, null, true);
+    this.enemy.equip(null, null, null, null, null, null, false);
+  }, this);
+  this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(function(key) {
     if (this.game.started) {
       return;
     }
@@ -190,17 +199,17 @@ GameState.prototype.update = function() {
   // cursors = left arm
   var leftMoved = false;
   var leftMove = {x:0, y:0};
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
     leftMove.x = -1;
     leftMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
     leftMove.x = 1;
     leftMoved = true;
   }
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
     leftMove.y = -1;
     leftMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
     leftMove.y = 1;
     leftMoved = true;
   }
@@ -212,17 +221,17 @@ GameState.prototype.update = function() {
   this.player.leftFist.move(leftMove.x, leftMove.y);
   var rightMoved = false;
   var rightMove = {x:0, y:0};
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
     rightMove.x = -1;
     rightMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
     rightMove.x = 1;
     rightMoved = true;
   }
-  if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
     rightMove.y = -1;
     rightMoved = true;
-  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
+  } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
     rightMove.y = 1;
     rightMoved = true;
   }

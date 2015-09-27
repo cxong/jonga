@@ -1,4 +1,4 @@
-var PLAYER_ARM_LENGTH = 40*PLAYER_SCALE;
+var PLAYER_ARM_LENGTH = 45*PLAYER_SCALE;
 var PLAYER_FIST_SPEED = PLAYER_SCALE*20;
 var ARM_FORCE = 1000;
 var TORSO_ROTATE_SPEED = 0.06;
@@ -93,21 +93,37 @@ Player.prototype.equip = function(
   sprite, group, collisionGroup, fistsCollidesWith,
   collideFunc, collideContext, isLeft) {
   if (isLeft) {
-    this.leftWeapon = new FixedWeapon(
-      this.game, group,
-      collisionGroup, fistsCollidesWith, collideFunc, collideContext,
-      this.leftFist, this.leftFist.x, this.leftFist.y, sprite);
-    this.constraints.push(this.game.physics.p2.createRevoluteConstraint(
-      this.leftFist, [0, 0], this.leftWeapon, [0, 0],
-      ARM_FORCE));
+    if (this.leftWeapon) {
+      this.game.physics.p2.removeConstraint(this.leftWeaponConstraint);
+      this.leftWeaponConstraint = null;
+      this.leftWeapon.destroy();
+      this.leftWeapon = null;
+    }
+    if (sprite) {
+      this.leftWeapon = new FixedWeapon(
+        this.game, group,
+        collisionGroup, fistsCollidesWith, collideFunc, collideContext,
+        this.leftFist, this.leftFist.x, this.leftFist.y, sprite);
+      this.leftWeaponConstraint = this.game.physics.p2.createRevoluteConstraint(
+        this.leftFist, [0, 0], this.leftWeapon, [0, 0],
+        ARM_FORCE);
+    }
   } else {
-    this.rightWeapon = new FixedWeapon(
-      this.game, group,
-      collisionGroup, fistsCollidesWith, collideFunc, collideContext,
-      this.rightFist, this.rightFist.x, this.rightFist.y, sprite);
-    this.constraints.push(this.game.physics.p2.createRevoluteConstraint(
-      this.rightFist, [0, 0], this.rightWeapon, [0, 0],
-      ARM_FORCE));
+    if (this.rightWeapon) {
+      this.game.physics.p2.removeConstraint(this.rightWeaponConstraint);
+      this.rightWeaponConstraint = null;
+      this.rightWeapon.destroy();
+      this.rightWeapon = null;
+    }
+    if (sprite) {
+      this.rightWeapon = new FixedWeapon(
+        this.game, group,
+        collisionGroup, fistsCollidesWith, collideFunc, collideContext,
+        this.rightFist, this.rightFist.x, this.rightFist.y, sprite);
+      this.rightWeaponConstraint = this.game.physics.p2.createRevoluteConstraint(
+        this.rightFist, [0, 0], this.rightWeapon, [0, 0],
+        ARM_FORCE);
+    }
   }
 };
 
@@ -147,9 +163,11 @@ Player.prototype.die = function() {
     this.game.physics.p2.removeConstraint(this.constraints[i]);
   }
   if (this.leftWeapon) {
+    this.game.physics.p2.removeConstraint(this.leftWeaponConstraint);
     this.leftWeapon.destroy();
   }
   if (this.rightWeapon) {
+    this.game.physics.p2.removeConstraint(this.rightWeaponConstraint);
     this.rightWeapon.destroy();
   }
   this.rightFist.destroy();
