@@ -190,7 +190,7 @@ GameState.prototype.stop = function() {
 };
 
 GameState.prototype.setGameMode = function() {
-  if (this.game.started) {
+  if (this.started) {
     return;
   }
   switch (this.gameMode) {
@@ -288,8 +288,10 @@ GameState.prototype.update = function() {
     // Check if controller connected
     if (this.game.input.gamepad.supported && this.game.input.gamepad.active &&
       this.pad1.connected) {
-      this.enemyAnalogControls.alpha = 1;
-      this.enemyBotControls.alpha = 0;
+      if (!this.started) {
+        this.enemyAnalogControls.alpha = 1;
+        this.enemyBotControls.alpha = 0;
+      }
       this.enemy.leftFist.move(
         this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X),
         this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y));
@@ -297,8 +299,10 @@ GameState.prototype.update = function() {
         this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_X),
         this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_Y));
     } else {
-      this.enemyAnalogControls.alpha = 0;
-      this.enemyBotControls.alpha = 1;
+      if (!this.started) {
+        this.enemyAnalogControls.alpha = 0;
+        this.enemyBotControls.alpha = 1;
+      }
       // Random kung fu moves for enemy
       move.update();
       if (move.isDone()) {
