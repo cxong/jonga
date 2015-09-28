@@ -128,8 +128,6 @@ GameState.prototype.start = function() {
   }
   this.sounds.drums.play();
 
-  this.started = true;
-
   // Place players on opposite ends
   this.player.die();
   this.player = new Player(
@@ -148,6 +146,8 @@ GameState.prototype.start = function() {
     [this.collisionGroups.players], this.parry, this,
     GAME_WIDTH - 80, PLAYER_Y, 'enemy', -1, this.sounds.whoosh);
   this.setGameMode();
+
+  this.started = true;
 };
 
 GameState.prototype.stop = function() {
