@@ -49,6 +49,9 @@ GameState.prototype.create = function() {
   bg.scale.setTo(PLAYER_SCALE);
   this.groups.bg.add(bg);
 
+  this.game.input.gamepad.start();
+  this.pad1 = this.game.input.gamepad.pad1;
+
   this.game.input.keyboard.addKey(Phaser.Keyboard.F).onDown.add(function(key) {
     if (this.game.scale.isFullScreen) {
         this.game.scale.stopFullScreen();
@@ -94,10 +97,15 @@ GameState.prototype.create = function() {
   playerControls.anchor.setTo(0.5);
   this.groups.title.add(playerControls);
 
-  var enemyControls = this.game.add.sprite(
+  this.enemyBotControls = this.game.add.sprite(
     GAME_WIDTH * 0.75, GAME_HEIGHT * 0.2, 'robot');
-  enemyControls.anchor.setTo(0.5);
-  this.groups.title.add(enemyControls);
+  this.enemyBotControls.anchor.setTo(0.5);
+  this.groups.title.add(this.enemyBotControls);
+
+  this.enemyAnalogControls = this.game.add.sprite(
+    GAME_WIDTH * 0.75, GAME_HEIGHT * 0.2, 'analog');
+  this.enemyAnalogControls.anchor.setTo(0.5);
+  this.groups.title.add(this.enemyAnalogControls);
 
   var switchPrompt = this.game.add.sprite(
     GAME_WIDTH / 2, GAME_HEIGHT * 0.1, 'switch_prompt');
@@ -276,15 +284,30 @@ GameState.prototype.update = function() {
   }
   this.player.rightFist.move(rightMove.x, rightMove.y);
 
-  // Random kung fu moves for enemy
   if (this.enemy) {
-    move.update();
-    if (move.isDone()) {
-      this.enemy.leftFist.move(0, 0.3);
-      this.enemy.rightFist.move(0, 0.3);
-      move = randomMove();
+    // Check if controller connected
+    if (this.game.input.gamepad.supported && this.game.input.gamepad.active &&
+      this.pad1.connected) {
+      this.enemyAnalogControls.alpha = 1;
+      this.enemyBotControls.alpha = 0;
+      this.enemy.leftFist.move(
+        this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X),
+        this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y));
+      this.enemy.rightFist.move(
+        this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_X),
+        this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_RIGHT_Y));
+    } else {
+      this.enemyAnalogControls.alpha = 0;
+      this.enemyBotControls.alpha = 1;
+      // Random kung fu moves for enemy
+      move.update();
+      if (move.isDone()) {
+        this.enemy.leftFist.move(0, 0.3);
+        this.enemy.rightFist.move(0, 0.3);
+        move = randomMove();
+      }
+      move.apply(this.enemy.leftFist, this.enemy.rightFist);
     }
-    move.apply(this.enemy.leftFist, this.enemy.rightFist);
   }
   if (this.started) {
     // Players move towards each other as long as they are far enough
